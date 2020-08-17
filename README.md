@@ -25,4 +25,4 @@ The app is written in C, and the UI is created using [Glade](https://glade.gnome
 
 ## Who am I?
 
-I've been casually hanging around the PineTime community since about November 2019, talking to people in the chat. I'm also working on UI designs and mockups for the PineTime which you can find [here](gitlab.com/arteeh/pinetimeos).
+I've been casually hanging around the PineTime community since about November 2019, talking to people in the chat. I'm also working on UI designs and mockups for the PineTime which you can find [here](gitlab.com/arteeh/pinetimeos). I'm arteeh#1186 on Discord and you can otherwise contact me through the links on [my website](https://www.arteeh.com/).
