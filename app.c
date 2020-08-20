@@ -1,4 +1,11 @@
+#include <unistd.h>
 #include <gtk/gtk.h>
+
+const char arch[] = "amd64";
+const char bootloaderUrl[] = "https://github.com/lupyuen/pinetime-rust-mynewt/releases/latest/download/mynewt_nosemi.elf.bin";
+const char infinitimeUrl[] = "https://github.com/JF002/Pinetime/releases/download/0.7.1/pinetime-mcuboot-app.img";
+static char 
+
 
 GtkBuilder *builder;
 GError *error = NULL;
@@ -23,9 +30,53 @@ GObject *confirmFlashBootloader;
 GObject *confirmFlashInfinitime;
 GObject *confirmFlashGeneric;
 
+// Copy OpenOCD Udev rules to /etc/udev/rules.d/
+void setUdev()
+{
+	// If the udev rule file already exists, skip
+	if(access("/etc/udev/rules.d/60-openocd.rules",F_OK) != -1)
+	{
+		g_print("OpenOCD udev rule already installed, skipping\n");
+		return;
+	}
+	
+	g_print("Setting udev rules for ST-Link flashing\n");
+	DIR *dirExists;
+	dirExists = opendir("/etc/udev/rules.d/");
+	if (dirExists)
+	{
+		// Construct the command we're going to execute
+		// TODO: THIS ARBITRARY ARRAY SIZE IS SILLY AND MAY CAUSE ISSUES. FIX IT
+		char command[500];
+		// Pkexec calls PolicyKit to ask the user for the root password
+		// ...like sudo for gui's, i guess
+		strcpy(command,"pkexec cp ");
+		// Get current working directory, because as root we won't know where to find it
+		char path[PATH_MAX];
+		getcwd(path,sizeof(path));
+		strcat(command,path);
+		strcat(command,"/openocd/");
+		strcat(command,arch);
+		strcat(command,"/contrib/60-openocd.rules /etc/udev/rules.d/");
+		g_print("%s\n",command);
+		system(command);
+		// Reload udev rules, TODO: this means two password requests in a row, fix?
+		char command2[] = "pkexec udevadm control --reload-rules";
+		g_print("%s\n",command2);
+		system(command2);
+	}
+	closedir(dirExists);
+}
 
-const char bootloaderUrl[] = "https://github.com/lupyuen/pinetime-rust-mynewt/releases/latest/download/mynewt_nosemi.elf.bin";
-const char infinitimeUrl[] = "https://github.com/JF002/Pinetime/releases/download/0.7.1/pinetime-mcuboot-app.img";
+void downloadBinary(char url[])
+{
+	
+}
+
+void flash(char file[], char address[])
+{
+	
+}
 
 // Generically handle input from flash confirmation dialogues, used for flash*() functions
 int flashDialog(GObject *confirmFlashx, char confirmFlashxName[])
@@ -50,18 +101,36 @@ int flashDialog(GObject *confirmFlashx, char confirmFlashxName[])
 
 void flashBootloader()
 {
-	flashDialog(confirmFlashBootloader,"confirmFlashBootloader");
+	// If user clicks yes in the confirmation dialog, commence the flashing
+	if(flashDialog(confirmFlashBootloader,"confirmFlashBootloader") == 1)
+	{
+		setUdev();
+		downloadBinary(bootloaderUrl);
+		flash();
+	}
 }
 
 void flashInfinitime()
 {
-	flashDialog(confirmFlashInfinitime,"confirmFlashInfinitime");
+	if(flashDialog(confirmFlashInfinitime,"confirmFlashInfinitime") == 1)
+	{
+		setUdev();
+		downloadBinary(infinitimeUrl);
+		flash();
+	}
 }
 
 void flashWeb()
 {
 	//input or sumn
-	flashDialog(confirmFlashGeneric,"confirmFlashGeneric");
+	char url[];
+	
+	if(flashDialog(confirmFlashGeneric,"confirmFlashGeneric") == 1)
+	{
+		setUdev();
+		downloadBinary(url);
+		flash();
+	}
 }
 
 void flashFile()
@@ -74,11 +143,21 @@ void flashFile()
 	if(response == GTK_RESPONSE_ACCEPT)
 	{
 		filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(flashFileChooser));
+		gtk_widget_hide(GTK_WIDGET(flashFileChooser));
 	}
-	else return;
-	gtk_widget_hide(GTK_WIDGET(flashFileChooser));
+	else 
+	{
+		gtk_widget_hide(GTK_WIDGET(flashFileChooser));
+		return;
+	}
 	
-	flashDialog(confirmFlashGeneric,"confirmFlashGeneric");
+	g_print("File to flash: %s\n",filename);
+	
+	if(flashDialog(confirmFlashGeneric,"confirmFlashGeneric") == 1)
+	{
+		setUdev();
+		flash();
+	}
 }
 
 int main(int argc,char *argv[])

@@ -92,6 +92,8 @@
   <object class="GtkFileChooserDialog" id="flashFileChooser">
     <property name="can_focus">False</property>
     <property name="modal">True</property>
+    <property name="default_width">360</property>
+    <property name="default_height">720</property>
     <property name="type_hint">dialog</property>
     <property name="create_folders">False</property>
     <child internal-child="vbox">
@@ -103,19 +105,6 @@
           <object class="GtkButtonBox">
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
-            <child>
-              <object class="GtkButton" id="btnFlashFileChooserCancel">
-                <property name="label" translatable="yes">Cancel</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
             <child>
               <object class="GtkButton" id="btnFlashFileChooserSelect">
                 <property name="label" translatable="yes">Select</property>
@@ -139,7 +128,6 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="-6">btnFlashFileChooserCancel</action-widget>
       <action-widget response="-3">btnFlashFileChooserSelect</action-widget>
     </action-widgets>
   </object>
