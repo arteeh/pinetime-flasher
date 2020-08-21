@@ -1,11 +1,16 @@
+// For system(), to run executables
 #include <unistd.h>
+// For basename() in downloadBinary()
+#include <libgen.h>
+// GTK library
 #include <gtk/gtk.h>
 
 const char arch[] = "amd64";
-const char bootloaderUrl[] = "https://github.com/lupyuen/pinetime-rust-mynewt/releases/latest/download/mynewt_nosemi.elf.bin";
-const char infinitimeUrl[] = "https://github.com/JF002/Pinetime/releases/download/0.7.1/pinetime-mcuboot-app.img";
-static char 
 
+char bootloaderUrl[] = "https://github.com/lupyuen/pinetime-rust-mynewt/releases/latest/download/mynewt_nosemi.elf.bin";
+char infinitimeUrl[] = "https://github.com/JF002/Pinetime/releases/download/0.7.1/pinetime-mcuboot-app.img";
+
+char fileToFlash[PATH_MAX];
 
 GtkBuilder *builder;
 GError *error = NULL;
@@ -68,14 +73,52 @@ void setUdev()
 	closedir(dirExists);
 }
 
+// Download a binary from the internet using wget
 void downloadBinary(char url[])
 {
+	// Construct destination path
+	char path[PATH_MAX];
+	getcwd(path,sizeof(path));
+	strcat(path,"/");
+	strcat(path,basename(url));
 	
+	// Construct wget command
+	char command[500] = "wget -q ";
+	strcat(command,url);
+	strcat(command," -O ");
+	strcat(command,path);
+	g_print("%s\n",command);
+	
+	// Run wget command
+	system(command);
+	
+	// Copy the destination path to fileToFlash so flash() can find it
+	strcpy(fileToFlash,path);
 }
 
-void flash(char file[], char address[])
+// Flash file in location fileToFlash to a given address on the Pinetime
+void flash(char address[])
 {
+	g_print("Flashing %s to address %s\n",fileToFlash,address);
 	
+	// Construct openocd command
+	char command[500];
+	strcpy(command,"openocd/");
+	strcat(command,arch);
+	strcat(command,"/bin/openocd -c 'set filename ");
+	strcat(command,fileToFlash);
+	strcat(command," ' -c 'set address ");
+	strcat(command,address);
+	strcat(command," ' -f scripts/swd-stlink.ocd");
+	strcat(command," -f scripts/flash-program.ocd");
+	
+	// Run it
+	g_print("%s SIZEOF:%i\n",command,strlen(command));
+	system(command);
+	
+	// Clean up leftovers
+	remove(fileToFlash);
+	strcpy(fileToFlash,"");
 }
 
 // Generically handle input from flash confirmation dialogues, used for flash*() functions
@@ -87,11 +130,9 @@ int flashDialog(GObject *confirmFlashx, char confirmFlashxName[])
 	switch(result)
 	{
 		case GTK_RESPONSE_YES:
-			g_print("Flashing...\n");
 			retVal = 1;
 			break;
 		default:
-			g_print("Cancelling flash...\n");
 			retVal = 0;
 			break;
 	}
@@ -106,7 +147,7 @@ void flashBootloader()
 	{
 		setUdev();
 		downloadBinary(bootloaderUrl);
-		flash();
+		flash("0x0000");
 	}
 }
 
@@ -116,20 +157,21 @@ void flashInfinitime()
 	{
 		setUdev();
 		downloadBinary(infinitimeUrl);
-		flash();
+		flash("0x8000");
 	}
 }
 
 void flashWeb()
 {
 	//input or sumn
-	char url[];
+	char url[200];
 	
 	if(flashDialog(confirmFlashGeneric,"confirmFlashGeneric") == 1)
 	{
 		setUdev();
+		// TODO: Input dialog for entering a URL
 		downloadBinary(url);
-		flash();
+		flash("0x8000");
 	}
 }
 
@@ -156,7 +198,8 @@ void flashFile()
 	if(flashDialog(confirmFlashGeneric,"confirmFlashGeneric") == 1)
 	{
 		setUdev();
-		flash();
+		strcpy(fileToFlash,filename);
+		flash("0x8000");
 	}
 }
 
