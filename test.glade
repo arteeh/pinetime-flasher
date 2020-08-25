@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.36.0 -->
+<interface>
+  <requires lib="gtk+" version="3.22"/>
+<object class="GtkWindow"/>
+  <child type="titlebar">
+    <object class="HdyHeaderBar">
+      <property name="centering-policy">strict</property>
+      <child type="title">
+        <object class="HdyViewSwitcherTitle"
+                id="view_switcher_title">
+          <property name="stack">stack</property>
+        </object>
+      </child>
+    </object>
+  </child>
+  <child>
+    <object class="GtkBox">
+      <child>
+        <object class="GtkStack" id="stack"/>
+      </child>
+      <child>
+        <object class="HdyViewSwitcherBar">
+          <property name="stack">stack</property>
+          <property name="reveal"
+                    bind-source="view_switcher_title"
+                    bind-property="title-visible"
+                    bind-flags="sync-create"/>
+        </object>
+      </child>
+    </object>
+  </child>
+</object>
+</interface>
