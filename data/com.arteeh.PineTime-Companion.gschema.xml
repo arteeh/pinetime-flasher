@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="pinetime-companion">
+	<schema id="com.arteeh.PineTime-Companion" path="/com/arteeh/PineTime-Companion/">
+	</schema>
+</schemalist>

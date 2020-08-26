@@ -1,0 +1,7 @@
+data/com.arteeh.PineTime-Companion.desktop.in
+data/com.arteeh.PineTime-Companion.appdata.xml.in
+data/com.arteeh.PineTime-Companion.gschema.xml
+src/pinetime_companion-window.ui
+src/main.c
+src/pinetime_companion-window.c
+
