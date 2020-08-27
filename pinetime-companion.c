@@ -214,15 +214,8 @@ int main(int argc,char *argv[])
 	gtk_init(&argc,&argv);
 	hdy_init();
 	
-	struct timeval start, stop;
-	
-	gettimeofday(&start, NULL);
-	
+	// Construct a GtkBuilder instance to load app.glade
 	builder = gtk_builder_new_from_file("pinetime-companion.ui");
-	
-	gettimeofday(&stop, NULL);
-	double secs = (double)(stop.tv_usec - start.tv_usec) / 1000000 + (double)(stop.tv_sec - start.tv_sec);
-	printf("time taken %f\n",secs);
 	
 	// Connect objects in the UI to our objects
 	window			= gtk_builder_get_object(builder,"window");
