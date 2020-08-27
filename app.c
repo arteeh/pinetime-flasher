@@ -239,6 +239,7 @@ int main(int argc,char *argv[])
 	g_signal_connect(btnFlashWeb,"clicked",G_CALLBACK(flashWeb),NULL);
 	g_signal_connect(btnFlashFile,"clicked",G_CALLBACK(flashFile),NULL);
 	
+	// Show the window. I hate GTK.
 	gtk_widget_show_all(GTK_WIDGET(window));
 	
 	gtk_main();
