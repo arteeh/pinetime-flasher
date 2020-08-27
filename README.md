@@ -13,7 +13,7 @@ and to replace NRF Connect/Gadgetbridge/Amazfish for:
 
 ## How to build
 
-On Debian, you need to have the following packages installed: `gcc`, `make`, `libgtk-3-dev` and `libhandy-1-dev`. Build by running `make` in the project directory. Start the app by running `./app`.
+On Debian, you need to have the following packages installed: `gcc`, `make`, `libgtk-3-dev` and `libhandy-1-dev`. Build by running `make` in the project directory. Start the app by running `make run`.
 
 ## Who am I?
 

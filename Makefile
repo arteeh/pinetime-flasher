@@ -1,7 +1,7 @@
 all: clean app
 
 OUTPUT = pinetime-companion
-FILES = pinetime-companion.c
+FILES = pinetime-companion.c advanced.c
 CFLAGS = `pkg-config --cflags gtk+-3.0 libhandy-1`
 LIBS = `pkg-config --libs gtk+-3.0 libhandy-1`
 WARNINGS = -Wall
