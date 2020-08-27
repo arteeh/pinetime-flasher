@@ -9,8 +9,6 @@
 // Libhandy
 #include <handy.h>
 
-int verbose = 0;
-
 const char arch[] = "amd64";
 
 char bootloaderUrl[] = "https://github.com/lupyuen/pinetime-rust-mynewt/releases/latest/download/mynewt_nosemi.elf.bin";
@@ -119,7 +117,7 @@ void flash(char address[])
 	strcat(command," -f scripts/flash-program.ocd");
 	
 	// Run it
-	g_print("%s SIZEOF:%i\n",command,strlen(command));
+	g_print("%s SIZEOF:%li\n",command,strlen(command));
 	system(command);
 	
 	// Clean up leftovers
@@ -211,22 +209,14 @@ void flashFile()
 
 int main(int argc,char *argv[])
 {
-	// Check command line arguments
-	for(int a = 1; a < argc; a++)
-	{
-		// Verbose
-		if(strcmp(argv[a],"-v") == 0 || strcmp(argv[a],"--verbose") == 0)
-		{
-			verbose = 1;
-		}
-	}
-	
 	gtk_init(&argc,&argv);
 	hdy_init();
 	
+	
+	
 	// Construct a GtkBuilder instance to load app.glade
 	builder = gtk_builder_new();
-	if (gtk_builder_add_from_file(builder, "app.glade", &error) == 0)
+	if (gtk_builder_add_from_file(builder, "app.ui", &error) == 0)
 	{
 		g_printerr ("Error loading file: %s\n", error->message);
 		g_clear_error (&error);
@@ -248,6 +238,8 @@ int main(int argc,char *argv[])
 	g_signal_connect(btnFlashInfinitime,"clicked",G_CALLBACK(flashInfinitime),NULL);
 	g_signal_connect(btnFlashWeb,"clicked",G_CALLBACK(flashWeb),NULL);
 	g_signal_connect(btnFlashFile,"clicked",G_CALLBACK(flashFile),NULL);
+	
+	gtk_widget_show_all(GTK_WIDGET(window));
 	
 	gtk_main();
 	
