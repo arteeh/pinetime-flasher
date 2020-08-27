@@ -319,7 +319,7 @@
             <property name="can_focus">True</property>
             <property name="policy">auto</property>
             <property name="stack">stack</property>
-            <property name="reveal">True</property>
+            <property name="reveal" bind-source="viewSwitcherTitle" bind-property="title-visible" bind-flags="sync-create">False</property>
           </object>
           <packing>
             <property name="expand">False</property>
