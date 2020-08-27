@@ -13,8 +13,7 @@ and to replace NRF Connect/Gadgetbridge/Amazfish for:
 
 ## How to build
 
-I build the project using GNOME Builder, which in turn decided to use Meson. I recommend you clone the project using Builder and working in there.
-You need to have libhandy (`libhandy1-devel` on Fedora) installed to build this project.
+On Debian, you need to have the following packages installed: `gcc`, `make`, `libgtk-3-dev` and `libhandy-1-dev`. Build by running `make` in the project directory. Start the app by running `./app`.
 
 ## Who am I?
 

@@ -212,16 +212,7 @@ int main(int argc,char *argv[])
 	gtk_init(&argc,&argv);
 	hdy_init();
 	
-	
-	
-	// Construct a GtkBuilder instance to load app.glade
-	builder = gtk_builder_new();
-	if (gtk_builder_add_from_file(builder, "app.ui", &error) == 0)
-	{
-		g_printerr ("Error loading file: %s\n", error->message);
-		g_clear_error (&error);
-		return 1;
-	}
+	builder = gtk_builder_new_from_file("pinetime-companion.ui");
 	
 	// Connect objects in the UI to our objects
 	window			= gtk_builder_get_object(builder,"window");
@@ -246,3 +237,4 @@ int main(int argc,char *argv[])
 	
 	return 0;
 }
+
