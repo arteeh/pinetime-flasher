@@ -1,11 +1,45 @@
-#include "main.h"
-#include "advanced.h"
+// strlen()
+#include <string.h>
+// For system(), to run executables
+#include <unistd.h>
+// For basename() in downloadBinary()
+#include <libgen.h>
+// GTK library
+#include <gtk/gtk.h>
+// Libhandy
+#include <handy.h>
 
-// TODO: Event handlers for buttons are broken since the move to Builder, reimplement them.
+int verbose = 0;
 
 const char arch[] = "amd64";
+
 char bootloaderUrl[] = "https://github.com/lupyuen/pinetime-rust-mynewt/releases/latest/download/mynewt_nosemi.elf.bin";
 char infinitimeUrl[] = "https://github.com/JF002/Pinetime/releases/download/0.7.1/pinetime-mcuboot-app.img";
+
+char fileToFlash[PATH_MAX];
+
+GtkBuilder *builder;
+GError *error = NULL;
+
+// Init objects to load builder objects into
+
+// Main window
+GObject *window;
+
+// Flash file chooser dialog
+GObject *flashFileChooser;
+GObject *btnFlashFileChooserSelect;
+
+// Buttons
+GObject *btnFlashBootloader;
+GObject *btnFlashInfinitime;
+GObject *btnFlashWeb;
+GObject *btnFlashFile;
+
+// Confirmation message dialogs
+GObject *confirmFlashBootloader;
+GObject *confirmFlashInfinitime;
+GObject *confirmFlashGeneric;
 
 // Copy OpenOCD Udev rules to /etc/udev/rules.d/
 void setUdev()
@@ -13,34 +47,33 @@ void setUdev()
 	// If the udev rule file already exists, skip
 	if(access("/etc/udev/rules.d/60-openocd.rules",F_OK) != -1)
 	{
-		printf("OpenOCD udev rule already installed, skipping\n");
+		g_print("OpenOCD udev rule already installed, skipping\n");
 		return;
 	}
-
-	printf("Setting udev rules for ST-Link flashing\n");
+	
+	g_print("Setting udev rules for ST-Link flashing\n");
 	DIR *dirExists;
 	dirExists = opendir("/etc/udev/rules.d/");
 	if (dirExists)
 	{
 		// Construct the command we're going to execute
-		// FIXME: This array size is silly and may cause issues in the future.
-		char command[4096];
+		// TODO: THIS ARBITRARY ARRAY SIZE IS SILLY AND MAY CAUSE ISSUES. FIX IT
+		char command[500];
 		// Pkexec calls PolicyKit to ask the user for the root password
 		// ...like sudo for gui's, i guess
 		strcpy(command,"pkexec cp ");
 		// Get current working directory, because as root we won't know where to find it
-		char path[4096];
+		char path[PATH_MAX];
 		getcwd(path,sizeof(path));
 		strcat(command,path);
 		strcat(command,"/openocd/");
 		strcat(command,arch);
 		strcat(command,"/contrib/60-openocd.rules /etc/udev/rules.d/");
-		printf("%s\n",command);
+		g_print("%s\n",command);
 		system(command);
-		// Reload udev rules
-    // FIXME: this means two password requests in a row, fix?
+		// Reload udev rules, TODO: this means two password requests in a row, fix?
 		char command2[] = "pkexec udevadm control --reload-rules";
-		printf("%s\n",command2);
+		g_print("%s\n",command2);
 		system(command2);
 	}
 	closedir(dirExists);
@@ -50,21 +83,21 @@ void setUdev()
 void downloadBinary(char url[])
 {
 	// Construct destination path
-	char path[4096];
+	char path[PATH_MAX];
 	getcwd(path,sizeof(path));
 	strcat(path,"/");
 	strcat(path,basename(url));
-
+	
 	// Construct wget command
 	char command[500] = "wget -q ";
 	strcat(command,url);
 	strcat(command," -O ");
 	strcat(command,path);
-	printf("%s\n",command);
-
+	g_print("%s\n",command);
+	
 	// Run wget command
 	system(command);
-
+	
 	// Copy the destination path to fileToFlash so flash() can find it
 	strcpy(fileToFlash,path);
 }
@@ -72,8 +105,8 @@ void downloadBinary(char url[])
 // Flash file in location fileToFlash to a given address on the Pinetime
 void flash(char address[])
 {
-	printf("Flashing %s to address %s\n",fileToFlash,address);
-
+	g_print("Flashing %s to address %s\n",fileToFlash,address);
+	
 	// Construct openocd command
 	char command[500];
 	strcpy(command,"openocd/");
@@ -84,11 +117,11 @@ void flash(char address[])
 	strcat(command,address);
 	strcat(command," ' -f scripts/swd-stlink.ocd");
 	strcat(command," -f scripts/flash-program.ocd");
-
+	
 	// Run it
-	printf("%s SIZEOF:%li\n",command,strlen(command));
+	g_print("%s SIZEOF:%i\n",command,strlen(command));
 	system(command);
-
+	
 	// Clean up leftovers
 	remove(fileToFlash);
 	strcpy(fileToFlash,"");
@@ -137,8 +170,8 @@ void flashInfinitime()
 void flashWeb()
 {
 	//input or sumn
-	char url[4096];
-
+	char url[200];
+	
 	if(flashDialog(confirmFlashGeneric,"confirmFlashGeneric") == 1)
 	{
 		setUdev();
@@ -160,14 +193,14 @@ void flashFile()
 		filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(flashFileChooser));
 		gtk_widget_hide(GTK_WIDGET(flashFileChooser));
 	}
-	else
+	else 
 	{
 		gtk_widget_hide(GTK_WIDGET(flashFileChooser));
 		return;
 	}
-
-	printf("File to flash: %s\n",filename);
-
+	
+	g_print("File to flash: %s\n",filename);
+	
 	if(flashDialog(confirmFlashGeneric,"confirmFlashGeneric") == 1)
 	{
 		setUdev();
@@ -176,3 +209,47 @@ void flashFile()
 	}
 }
 
+int main(int argc,char *argv[])
+{
+	// Check command line arguments
+	for(int a = 1; a < argc; a++)
+	{
+		// Verbose
+		if(strcmp(argv[a],"-v") == 0 || strcmp(argv[a],"--verbose") == 0)
+		{
+			verbose = 1;
+		}
+	}
+	
+	gtk_init(&argc,&argv);
+	hdy_init();
+	
+	// Construct a GtkBuilder instance to load app.glade
+	builder = gtk_builder_new();
+	if (gtk_builder_add_from_file(builder, "app.glade", &error) == 0)
+	{
+		g_printerr ("Error loading file: %s\n", error->message);
+		g_clear_error (&error);
+		return 1;
+	}
+	
+	// Connect objects in the UI to our objects
+	window			= gtk_builder_get_object(builder,"window");
+	btnFlashBootloader	= gtk_builder_get_object(builder,"btnFlashBootloader");
+	btnFlashInfinitime	= gtk_builder_get_object(builder,"btnFlashInfinitime");
+	btnFlashWeb		= gtk_builder_get_object(builder,"btnFlashWeb");
+	btnFlashFile		= gtk_builder_get_object(builder,"btnFlashFile");
+	
+	// Close app when close button is pressed
+	g_signal_connect (window,"destroy",G_CALLBACK(gtk_main_quit),NULL);
+	
+	// Connect button press events to our functions
+	g_signal_connect(btnFlashBootloader,"clicked",G_CALLBACK(flashBootloader),NULL);
+	g_signal_connect(btnFlashInfinitime,"clicked",G_CALLBACK(flashInfinitime),NULL);
+	g_signal_connect(btnFlashWeb,"clicked",G_CALLBACK(flashWeb),NULL);
+	g_signal_connect(btnFlashFile,"clicked",G_CALLBACK(flashFile),NULL);
+	
+	gtk_main();
+	
+	return 0;
+}

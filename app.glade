@@ -3,7 +3,7 @@
 <interface>
   <requires lib="gtk+" version="3.22"/>
   <requires lib="libhandy" version="1.0"/>
-  <template class="PinetimeCompanionWindow" parent="HdyApplicationWindow">
+  <object class="HdyApplicationWindow" id="window">
     <property name="can_focus">False</property>
     <child>
       <object class="GtkBox" id="box">
@@ -203,10 +203,7 @@
         </child>
       </object>
     </child>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
-  </template>
+  </object>
   <object class="GtkMessageDialog" id="confirmFlashBootloader">
     <property name="can_focus">False</property>
     <property name="modal">True</property>

@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=pinetime-companion
-Exec=pinetime-companion
-Terminal=false
-Type=Application
-Categories=GTK;
-StartupNotify=true
