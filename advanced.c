@@ -7,7 +7,9 @@ Or get arch from the system in initAdvanced and set this variable?
 */
 char arch[] = "amd64";
 
+// FIXME: Don't hardcode this either. Settings dialog where user can change this?
 char bootloaderUrl[] = "https://github.com/lupyuen/pinetime-rust-mynewt/releases/latest/download/mynewt_nosemi.elf.bin";
+// FIXME: Can't just grab the latest release because there are only pre-releases right now. Fix later
 char infinitimeUrl[] = "https://github.com/JF002/Pinetime/releases/download/0.7.1/pinetime-mcuboot-app.img";
 
 char fileToFlash[4096];
@@ -27,6 +29,7 @@ GObject *confirmFlashBootloader;
 GObject *confirmFlashInfinitime;
 GObject *confirmFlashGeneric;
 
+// Initialize the UI and all event handlers under the Advanced page
 void initAdvanced()
 {
 	// Add advanced.ui to the builder
