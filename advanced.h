@@ -1,6 +1,8 @@
 #ifndef ADVANCED_H
 #define ADVANCED_H
 
+#include "pinetime-companion.h"
+
 extern char arch[];
 
 extern char bootloaderUrl[];
@@ -25,13 +27,13 @@ extern GObject *confirmFlashGeneric;
 
 // Function declarations
 void initAdvanced();
-extern void setUdev();
-extern void downloadBinary(char url[]);
-extern void flash(char address[]);
-extern int flashDialog(GObject *confirmFlashx, char confirmFlashxName[]);
-extern void flashBootloader();
-extern void flashInfinitime();
-extern void flashWeb();
-extern void flashFile();
+void setUdev();
+void downloadBinary(char url[]);
+void flash(char address[]);
+int flashDialog(GObject *confirmFlashx, char confirmFlashxName[]);
+void flashBootloader();
+void flashInfinitime();
+void flashWeb();
+void flashFile();
 
 #endif

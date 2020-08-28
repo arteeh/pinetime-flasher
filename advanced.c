@@ -1,6 +1,10 @@
-#include "pinetime-companion.h"
 #include "advanced.h"
 
+/*
+Set which architecture of openocd to use. Choose between "amd64", "arm32" and "arm64"
+FIXME: Don't hardcode this? Set in makefile or something?
+Or get arch from the system in initAdvanced and set this variable?
+*/
 char arch[] = "amd64";
 
 char bootloaderUrl[] = "https://github.com/lupyuen/pinetime-rust-mynewt/releases/latest/download/mynewt_nosemi.elf.bin";

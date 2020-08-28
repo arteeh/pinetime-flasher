@@ -14,6 +14,8 @@
 // Libhandy
 #include <handy.h>
 
+#include "advanced.h"
+
 extern GtkBuilder *builder;
 extern GObject *window;
 
