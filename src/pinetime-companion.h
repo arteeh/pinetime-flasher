@@ -14,6 +14,7 @@
 // Libhandy
 #include <handy.h>
 
+#include "updates.h"
 #include "advanced.h"
 
 extern GtkBuilder *builder;

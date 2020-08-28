@@ -63,22 +63,23 @@ void setUdev()
 	dirExists = opendir("/etc/udev/rules.d/");
 	if (dirExists)
 	{
-		// Construct the command we're going to execute
-		// FIXME: This string size is silly and random.
-		char command[500];
-		// Pkexec calls PolicyKit to ask the user for the root password
-		// ...like sudo for gui's, I guess
-		strcpy(command,"pkexec cp ");
 		// Get current working directory, because as root we won't know where to find it
 		char path[PATH_MAX];
 		getcwd(path,sizeof(path));
-		strcat(command,path);
-		strcat(command,"/openocd/");
-		strcat(command,arch);
-		strcat(command,"/contrib/60-openocd.rules /etc/udev/rules.d/");
+		
+		// Construct the command we're going to execute.
+		// pkexec: run a command as root user
+		char command[4164];
+		snprintf(command,sizeof(command),"%s%s%s%s%s",
+			"pkexec cp ",path,"/openocd/",arch,
+			"/contrib/60-openocd.rules /etc/udev/rules.d/"
+		);
 		g_print("%s\n",command);
+		
+		// Execute
 		system(command);
-		// Reload udev rules, FIXME: this means two password requests in a row, fix?
+		
+		// Reload udev rules, FIXME: this means two root password requests in a row, fix?
 		char command2[] = "pkexec udevadm control --reload-rules";
 		g_print("%s\n",command2);
 		system(command2);
@@ -90,24 +91,31 @@ void setUdev()
 void downloadBinary(char url[])
 {
 	// Construct destination path
-	char path[PATH_MAX];
+	char path[4107];
 	getcwd(path,sizeof(path));
-	strcat(path,"/");
-	strcat(path,basename(url));
+	
+	snprintf(path,sizeof(path),"%s%s",
+		"/",basename(url)
+	);
 	
 	// Construct wget command
-	char command[500] = "wget -q ";
-	strcat(command,url);
-	strcat(command," -O ");
-	strcat(command,path);
+	char command[4118];
+	snprintf(command,sizeof(command),"%s%s%s%s",
+		"wget -q",url," -O ",path
+	);
 	g_print("%s\n",command);
 	
 	// TODO: Check if wget is installed. Maybe bundle wget with flatpak?
 	
-	// Run wget command
-	system(command);
+	// Run wget command. Don't just use system() because we need the output
+	FILE *p = popen(command, "r");
+	// FIXME: What's a good buffer size for this?
+	char buffer[4096];
+	fgets(buffer,sizeof(buffer),p);
+	pclose(p);
 	
 	// Copy the destination path to fileToFlash so flash() can find it
+	
 	strcpy(fileToFlash,path);
 }
 
@@ -119,19 +127,22 @@ void flash(char address[])
 	g_print("Flashing %s to address %s\n",fileToFlash,address);
 	
 	// Construct openocd command
-	char command[500];
-	strcpy(command,"openocd/");
-	strcat(command,arch);
-	strcat(command,"/bin/openocd -c 'set filename ");
-	strcat(command,fileToFlash);
-	strcat(command," ' -c 'set address ");
-	strcat(command,address);
-	strcat(command," ' -f scripts/swd-stlink.ocd");
-	strcat(command," -f scripts/flash-program.ocd");
+	char command[4215];
+	snprintf(command,sizeof(command),"%s%s%s%s%s%s%s%s%s%s%s",
+		"openocd/",arch,"/bin/openocd ",
+		"-c 'set filename ",fileToFlash," ' ",
+		"-c 'set address ",address," ' ",
+		"-f scripts/swd-stlink.ocd ",
+		"-f scripts/flash-program.ocd"
+	);
+	g_print("%s\n",command);
 	
-	// Run it
-	g_print("%s SIZEOF:%li\n",command,strlen(command));
-	system(command);
+	// Run it. Don't just use system() because we need the output
+	FILE *p = popen(command, "r");
+	// FIXME: What's a good buffer size for this?
+	char buffer[4096];
+	fgets(buffer,sizeof(buffer),p);
+	pclose(p);
 	
 	// Clean up leftovers
 	remove(fileToFlash);
