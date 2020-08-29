@@ -1,11 +1,6 @@
 #include "advanced.h"
 
-/*
-Set which architecture of openocd to use. Choose between "amd64", "arm32" and "arm64"
-FIXME: Don't hardcode this? Set in makefile or something?
-Or get arch from the system in initAdvanced and set this variable?
-*/
-char arch[] = "amd64";
+char arch[6];
 
 // FIXME: Don't hardcode this either. Settings dialog where user can change this?
 char bootloaderUrl[] = "https://github.com/lupyuen/pinetime-rust-mynewt/releases/latest/download/mynewt_nosemi.elf.bin";
@@ -32,6 +27,15 @@ GObject *confirmFlashGeneric;
 // Initialize the UI and all event handlers under the Advanced page
 void initAdvanced()
 {
+	// place system arch in arch string
+	switch(getArch())
+	{
+		case 0: printf("ERROR: getArch() failed\n"); break;
+		case 1: strcpy(arch,"amd64"); break;
+		case 2: strcpy(arch,"arm64"); break;
+		case 3: strcpy(arch,"arm32"); break;
+	}
+	
 	// Add advanced.ui to the builder
 	gtk_builder_add_from_file(builder,"advanced.ui",NULL);
 	
@@ -48,17 +52,40 @@ void initAdvanced()
 	g_signal_connect(btnFlashFile,"clicked",G_CALLBACK(flashFile),NULL);
 }
 
+/*
+Get CPU architecture
+return 1 = amd64
+return 2 = arm64
+return 3 = arm32
+*/
+int getArch()
+{
+	struct utsname *systemData = malloc(sizeof(struct utsname));
+	uname(systemData);
+	char arch[8];
+	strcpy(arch,systemData->machine);
+	free(systemData);
+	printf("System architecture: %s\n",arch);
+	
+	int retVal = 0;
+	
+	if(strcmp(arch,"x86_64") == 0) retVal = 1;
+	// TODO: Get arm64 and arm32 architectures
+	
+	return retVal;
+}
+
 // Copy OpenOCD Udev rules to /etc/udev/rules.d/
 void setUdev()
 {
 	// If the udev rule file already exists, skip
 	if(access("/etc/udev/rules.d/60-openocd.rules",F_OK) != -1)
 	{
-		g_print("OpenOCD udev rule already installed, skipping\n");
+		printf("OpenOCD udev rule already installed, skipping\n");
 		return;
 	}
 	
-	g_print("Setting udev rules for ST-Link flashing\n");
+	printf("Setting udev rules for ST-Link flashing\n");
 	DIR *dirExists;
 	dirExists = opendir("/etc/udev/rules.d/");
 	if (dirExists)
@@ -74,14 +101,14 @@ void setUdev()
 			"pkexec cp ",path,"/openocd/",arch,
 			"/contrib/60-openocd.rules /etc/udev/rules.d/"
 		);
-		g_print("%s\n",command);
+		printf("%s\n",command);
 		
 		// Execute
 		system(command);
 		
 		// Reload udev rules, FIXME: this means two root password requests in a row, fix?
 		char command2[] = "pkexec udevadm control --reload-rules";
-		g_print("%s\n",command2);
+		printf("%s\n",command2);
 		system(command2);
 	}
 	closedir(dirExists);
@@ -98,19 +125,21 @@ void downloadBinary(char url[])
 		"/",basename(url)
 	);
 	
+	// TODO: Don't run wget, use curl library instead:
+	// https://curl.haxx.se/libcurl/c/
+	// https://curl.haxx.se/libcurl/c/curlgtk.html
+	
 	// Construct wget command
 	char command[4118];
 	snprintf(command,sizeof(command),"%s%s%s%s",
 		"wget -q",url," -O ",path
 	);
-	g_print("%s\n",command);
-	
-	// TODO: Check if wget is installed. Maybe bundle wget with flatpak?
+	printf("%s\n",command);
 	
 	// Run wget command. Don't just use system() because we need the output
 	FILE *p = popen(command, "r");
 	// FIXME: What's a good buffer size for this?
-	char buffer[4096];
+	char buffer[4095];
 	fgets(buffer,sizeof(buffer),p);
 	pclose(p);
 	
@@ -124,7 +153,7 @@ void flash(char address[])
 {
 	// TODO: "Flashing..." dialog for showing OpenOCD's log
 
-	g_print("Flashing %s to address %s\n",fileToFlash,address);
+	printf("Flashing %s to address %s\n",fileToFlash,address);
 	
 	// Construct openocd command
 	char command[4215];
@@ -135,7 +164,7 @@ void flash(char address[])
 		"-f scripts/swd-stlink.ocd ",
 		"-f scripts/flash-program.ocd"
 	);
-	g_print("%s\n",command);
+	printf("%s\n",command);
 	
 	// Run it. Don't just use system() because we need the output
 	FILE *p = popen(command, "r");
@@ -223,7 +252,7 @@ void flashFile()
 		return;
 	}
 	
-	g_print("File to flash: %s\n",filename);
+	printf("File to flash: %s\n",filename);
 	
 	// TODO: Dialog for specifying the address to flash to
 	

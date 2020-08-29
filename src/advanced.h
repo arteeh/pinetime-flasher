@@ -3,6 +3,12 @@
 
 #include "pinetime-companion.h"
 
+// For uname() in getArch()
+#include <sys/utsname.h>
+
+// For downloading files from the internet
+//#include <curl/curl.h>
+
 extern char arch[];
 
 extern char bootloaderUrl[];
@@ -27,6 +33,7 @@ extern GObject *confirmFlashGeneric;
 
 // Function declarations
 void initAdvanced();
+int getArch();
 void setUdev();
 void downloadBinary(char url[]);
 void flash(char address[]);
