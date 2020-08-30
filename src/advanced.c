@@ -2,16 +2,10 @@
 
 char arch[6];
 
-// FIXME: Don't hardcode this either. Settings dialog where user can change this?
-char bootloaderUrl[] = "https://github.com/lupyuen/pinetime-rust-mynewt/releases/latest/download/mynewt_nosemi.elf.bin";
-// FIXME: Can't just grab the latest release because there are only pre-releases right now. Fix later
-char infinitimeUrl[] = "https://github.com/JF002/Pinetime/releases/download/0.7.1/pinetime-mcuboot-app.img";
-
 char fileToFlash[4096];
 
 // Flash file chooser dialog
 GObject *flashFileChooser;
-GObject *btnFlashFileChooserSelect;
 
 // Buttons
 GObject *btnFlashBootloader;
@@ -19,10 +13,12 @@ GObject *btnFlashInfinitime;
 GObject *btnFlashWeb;
 GObject *btnFlashFile;
 
-// Confirmation message dialogs
-GObject *confirmFlashBootloader;
-GObject *confirmFlashInfinitime;
-GObject *confirmFlashGeneric;
+// Confirmation message dialog
+GObject *confirmFlash;
+
+// Input address dialog
+GObject *flashGetAddress;
+GObject *inpAddress;
 
 // Initialize the UI and all event handlers under the Advanced page
 void initAdvanced()
@@ -36,14 +32,15 @@ void initAdvanced()
 		case 3: strcpy(arch,"arm32"); break;
 	}
 	
-	// Add advanced.ui to the builder
-	gtk_builder_add_from_file(builder,"advanced.ui",NULL);
-	
 	// Connect objects in the UI to our objects
 	btnFlashBootloader	= gtk_builder_get_object(builder,"btnFlashBootloader");
 	btnFlashInfinitime	= gtk_builder_get_object(builder,"btnFlashInfinitime");
 	btnFlashWeb		= gtk_builder_get_object(builder,"btnFlashWeb");
 	btnFlashFile		= gtk_builder_get_object(builder,"btnFlashFile");
+	flashFileChooser	= gtk_builder_get_object(builder,"flashFileChooser");
+	confirmFlash		= gtk_builder_get_object(builder,"confirmFlash");
+	flashGetAddress		= gtk_builder_get_object(builder,"flashGetAddress");
+	inpAddress		= gtk_builder_get_object(builder,"inpAddress");
 	
 	// Connect button press events to our functions
 	g_signal_connect(btnFlashBootloader,"clicked",G_CALLBACK(flashBootloader),NULL);
@@ -178,12 +175,21 @@ void flash(char address[])
 	strcpy(fileToFlash,"");
 }
 
-// Generically handle input from flash confirmation dialogues, used for flash*() functions
-int flashDialog(GObject *confirmFlashx, char confirmFlashxName[])
+// Handle input from flash confirmation dialog, used for flash*() functions
+int flashConfirm(char name[],char address[])
 {
 	int retVal;
-	confirmFlashx = gtk_builder_get_object(builder,confirmFlashxName);
-	int result = gtk_dialog_run(GTK_DIALOG(confirmFlashx));
+	
+	// Set the dialog text
+	// FIXME: Proper string size? This one doesn't put out a warning when it's too small
+	char message[1024];
+	snprintf(message,sizeof(message),"%s%s%s%s%s",
+		"Are you sure you want to flash ",name," to address ",address,"?"
+	);
+	gtk_message_dialog_set_markup(GTK_MESSAGE_DIALOG(confirmFlash),message);
+	
+	// Return whether the user has pressed yes or no
+	int result = gtk_dialog_run(GTK_DIALOG(confirmFlash));
 	switch(result)
 	{
 		case GTK_RESPONSE_YES:
@@ -193,44 +199,74 @@ int flashDialog(GObject *confirmFlashx, char confirmFlashxName[])
 			retVal = 0;
 			break;
 	}
-	gtk_widget_hide(GTK_WIDGET(confirmFlashx));
+	
+	// Close the widget
+	gtk_widget_hide(GTK_WIDGET(confirmFlash));
+	
 	return retVal;
 }
 
 void flashBootloader()
 {
+	char address[] = "0x0000";
+	char url[] = "https://github.com/lupyuen/pinetime-rust-mynewt/releases/latest/download/mynewt_nosemi.elf.bin";
+	
 	// If user clicks yes in the confirmation dialog, commence the flashing
-	if(flashDialog(confirmFlashBootloader,"confirmFlashBootloader") == 1)
+	if(flashConfirm("the MCUBoot bootloader",address) == 1)
 	{
 		setUdev();
-		downloadBinary(bootloaderUrl);
-		flash("0x0000");
+		downloadBinary(url);
+		flash(address);
 	}
 }
 
 void flashInfinitime()
 {
-	if(flashDialog(confirmFlashInfinitime,"confirmFlashInfinitime") == 1)
+	char address[] = "0x8000";
+	// FIXME: This is not guaranteed to be the latest version
+	char url[] = "https://github.com/JF002/Pinetime/releases/download/0.7.1/pinetime-mcuboot-app.img";
+	
+	if(flashConfirm("InfiniTime",address) == 1)
 	{
 		setUdev();
-		downloadBinary(infinitimeUrl);
-		flash("0x8000");
+		downloadBinary(url);
+		flash(address);
 	}
 }
 
 void flashWeb()
 {
-	char url[200];
+	char url[1024];
 	
 	// TODO: Dialog for entering a URL
 	
-	// TODO: Dialog for specifying the address to flash to
-	
-	if(flashDialog(confirmFlashGeneric,"confirmFlashGeneric") == 1)
+	// Get the address from the getAddress dialog
+	char address[6];
+	int addressSet = 0;
+	int addressResponse = gtk_dialog_run(GTK_DIALOG(flashGetAddress));
+	switch(addressResponse)
 	{
-		setUdev();
-		downloadBinary(url);
-		flash("0x8000");
+		case GTK_RESPONSE_OK:
+			strcpy(address,gtk_entry_get_text(GTK_ENTRY(inpAddress)));
+			printf("Address to flash to: %s\n",address);
+			addressSet = 1;
+			break;
+		default:
+			break;
+	}
+	gtk_widget_hide(GTK_WIDGET(flashGetAddress));
+	
+	// Check if the address is set
+	if(addressSet)
+	{
+		// Do a last confirmation with the user
+		if(flashConfirm("URL FILE??",address) == 1)
+		{
+			// Set udev rules, download the file and flash
+			setUdev();
+			downloadBinary(url);
+			flash(address);
+		}
 	}
 }
 
@@ -238,29 +274,47 @@ void flashFile()
 {
 	// Get filename from file chooser dialog
 	char *filename;
-	flashFileChooser = gtk_builder_get_object(builder,"flashFileChooser");
-	btnFlashFileChooserSelect = gtk_builder_get_object(builder,"btnFlashFileChooserSelect");
-	int response = gtk_dialog_run(GTK_DIALOG(flashFileChooser));
-	if(response == GTK_RESPONSE_ACCEPT)
+	int filenameSet = 0;
+	int fileChooserResponse = gtk_dialog_run(GTK_DIALOG(flashFileChooser));
+	switch(fileChooserResponse)
 	{
-		filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(flashFileChooser));
-		gtk_widget_hide(GTK_WIDGET(flashFileChooser));
+		case GTK_RESPONSE_ACCEPT:
+			filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(flashFileChooser));
+			printf("File to flash: %s\n",filename);
+			filenameSet = 1;
+			break;
+		default:
+			break;
 	}
-	else 
+	gtk_widget_hide(GTK_WIDGET(flashFileChooser));
+	
+	// Get the address from the getAddress dialog
+	char address[6];
+	int addressSet = 0;
+	int addressResponse = gtk_dialog_run(GTK_DIALOG(flashGetAddress));
+	switch(addressResponse)
 	{
-		gtk_widget_hide(GTK_WIDGET(flashFileChooser));
-		return;
+		case GTK_RESPONSE_OK:
+			strcpy(address,gtk_entry_get_text(GTK_ENTRY(inpAddress)));
+			printf("Address to flash to: %s\n",address);
+			addressSet = 1;
+			break;
+		default:
+			break;
 	}
+	gtk_widget_hide(GTK_WIDGET(flashGetAddress));
 	
-	printf("File to flash: %s\n",filename);
-	
-	// TODO: Dialog for specifying the address to flash to
-	
-	if(flashDialog(confirmFlashGeneric,"confirmFlashGeneric") == 1)
+	// Check if both the filename and the address are set
+	if(filenameSet && addressSet)
 	{
-		setUdev();
-		strcpy(fileToFlash,filename);
-		flash("0x8000");
+		// Do a last confirmation with the user
+		if(flashConfirm(filename,address) == 1)
+		{
+			// Set udev rules and flash
+			setUdev();
+			strcpy(fileToFlash,filename);
+			flash(address);
+		}
 	}
 }
 

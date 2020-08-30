@@ -11,9 +11,6 @@
 
 extern char arch[];
 
-extern char bootloaderUrl[];
-extern char infinitimeUrl[];
-
 extern char fileToFlash[];
 
 // Flash file chooser dialog
@@ -37,7 +34,7 @@ int getArch();
 void setUdev();
 void downloadBinary(char url[]);
 void flash(char address[]);
-int flashDialog(GObject *confirmFlashx, char confirmFlashxName[]);
+int flashConfirm(char name[],char address[]);
 void flashBootloader();
 void flashInfinitime();
 void flashWeb();
