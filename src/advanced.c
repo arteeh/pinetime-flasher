@@ -115,33 +115,37 @@ void setUdev()
 void downloadBinary(char url[])
 {
 	// Construct destination path
-	char path[4107];
-	getcwd(path,sizeof(path));
-	
-	snprintf(path,sizeof(path),"%s%s",
-		"/",basename(url)
+	char path[2048];
+	char fpath[1024];
+	getcwd(fpath,sizeof(fpath));
+	snprintf(path,sizeof(path),"%s%s%s",
+		fpath,"/",basename(url)
 	);
 	
-	// TODO: Don't run wget, use curl library instead:
-	// https://curl.haxx.se/libcurl/c/
-	// https://curl.haxx.se/libcurl/c/curlgtk.html
+	printf("Downloading url %s...\n",url);
+	printf("to destination  %s...\n",path);
 	
-	// Construct wget command
-	char command[4118];
-	snprintf(command,sizeof(command),"%s%s%s%s",
-		"wget -q",url," -O ",path
-	);
-	printf("%s\n",command);
-	
-	// Run wget command. Don't just use system() because we need the output
-	FILE *p = popen(command, "r");
-	// FIXME: What's a good buffer size for this?
-	char buffer[4095];
-	fgets(buffer,sizeof(buffer),p);
-	pclose(p);
+	// Download file using curl
+	// FIXME: UI is stuck until file is done downloading, pthread?
+	FILE *destinationFile;
+	CURL *curl;
+	CURLcode res;
+	curl = curl_easy_init();
+	if(curl)
+	{
+		destinationFile = fopen(path,"wb");
+		curl_easy_setopt(curl, CURLOPT_URL, url);
+		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, destinationFile);
+		res = curl_easy_perform(curl);
+		if(res != CURLE_OK)
+			printf("Download failed: %s\n",curl_easy_strerror(res));
+		fclose(destinationFile);
+		curl_easy_cleanup(curl);
+	}
 	
 	// Copy the destination path to fileToFlash so flash() can find it
-	
 	strcpy(fileToFlash,path);
 }
 
@@ -167,11 +171,15 @@ void flash(char address[])
 	FILE *p = popen(command, "r");
 	// FIXME: What's a good buffer size for this?
 	char buffer[4096];
-	fgets(buffer,sizeof(buffer),p);
+	while(fgets(buffer,sizeof(buffer),p) != NULL)
+	{
+		printf("OPENOCD COMMAND BUFFER:\n%s\n",buffer);
+	}
+	
 	pclose(p);
 	
 	// Clean up leftovers
-	remove(fileToFlash);
+	// remove(fileToFlash); FIXME: DON'T HAVE THIS UNCOMMENTED WHEN TESTING ON RANDOM FILES
 	strcpy(fileToFlash,"");
 }
 
@@ -241,19 +249,19 @@ void flashWeb()
 	// TODO: Dialog for entering a URL
 	
 	// Get the address from the getAddress dialog
+	char addr[4];
 	char address[6];
 	int addressSet = 0;
 	int addressResponse = gtk_dialog_run(GTK_DIALOG(flashGetAddress));
-	switch(addressResponse)
+	
+	if(addressResponse == GTK_RESPONSE_OK)
 	{
-		case GTK_RESPONSE_OK:
-			strcpy(address,gtk_entry_get_text(GTK_ENTRY(inpAddress)));
-			printf("Address to flash to: %s\n",address);
-			addressSet = 1;
-			break;
-		default:
-			break;
+		strcpy(addr,gtk_entry_get_text(GTK_ENTRY(inpAddress)));
+		snprintf(address,sizeof(address),"%s%s","0x",addr);
+		printf("Address to flash to: %s\n",address);
+		addressSet = 1;
 	}
+	
 	gtk_widget_hide(GTK_WIDGET(flashGetAddress));
 	
 	// Check if the address is set
@@ -276,32 +284,31 @@ void flashFile()
 	char *filename;
 	int filenameSet = 0;
 	int fileChooserResponse = gtk_dialog_run(GTK_DIALOG(flashFileChooser));
-	switch(fileChooserResponse)
+	
+	if(fileChooserResponse == GTK_RESPONSE_ACCEPT)
 	{
-		case GTK_RESPONSE_ACCEPT:
-			filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(flashFileChooser));
-			printf("File to flash: %s\n",filename);
-			filenameSet = 1;
-			break;
-		default:
-			break;
+		filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(flashFileChooser));
+		printf("File to flash: %s\n",filename);
+		filenameSet = 1;
 	}
+	
 	gtk_widget_hide(GTK_WIDGET(flashFileChooser));
 	
 	// Get the address from the getAddress dialog
-	char address[6];
+	char addr[8];
+	char address[16];
 	int addressSet = 0;
 	int addressResponse = gtk_dialog_run(GTK_DIALOG(flashGetAddress));
-	switch(addressResponse)
+	
+	if(addressResponse == GTK_RESPONSE_OK)
 	{
-		case GTK_RESPONSE_OK:
-			strcpy(address,gtk_entry_get_text(GTK_ENTRY(inpAddress)));
-			printf("Address to flash to: %s\n",address);
-			addressSet = 1;
-			break;
-		default:
-			break;
+		strcpy(addr,gtk_entry_get_text(GTK_ENTRY(inpAddress)));
+		printf("addr: %s\n",addr);
+		snprintf(address,sizeof(address),"%s%s","0x",addr);
+		printf("Address to flash to: %s\n",address);
+		addressSet = 1;
 	}
+	
 	gtk_widget_hide(GTK_WIDGET(flashGetAddress));
 	
 	// Check if both the filename and the address are set

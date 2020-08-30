@@ -7,7 +7,7 @@
 #include <sys/utsname.h>
 
 // For downloading files from the internet
-//#include <curl/curl.h>
+#include <curl/curl.h>
 
 extern char arch[];
 

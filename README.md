@@ -9,12 +9,20 @@ and to replace NRF Connect/Gadgetbridge/Amazfish for:
 - Syncing time and date on the watch
 - Sending notifications to the watch (in the background)
 
-...making this app a one-stop-shop for linking your PineTime with the PinePhone.
+...making this app a one-stop-shop for interacting with your PineTime, on your PinePhone.
 
 ## How to build
 
-On Debian, you need to have the following packages installed: `gcc`, `make`, `libgtk-3-dev` and `libhandy-1-dev`. Build by running `make` in the project directory. Start the app by running `make run`.
+On Debian, you need to have the following packages installed: 
+
+`clang` (or gcc, but change the makefile)
+`make`
+`libgtk-3-dev`
+`libhandy-1-dev`
+`libcurl4-openssl-dev`
+
+Build by running `make` in the project directory. Start the app by running `make run`.
 
 ## Who am I?
 
-I've been casually hanging around the PineTime community since about November 2019, talking to people in the chat. I'm also working on UI designs and mockups for the PineTime which you can find [here](https://www.gitlab.com/arteeh/pinetimeos). I'm arteeh#1186 on Discord and you can otherwise contact me through the links on [my website](https://www.arteeh.com/).
+I've been casually hanging around the PineTime community since about November 2019, talking to people in the chat. I'm also working on UI designs and mockups for the PineTime which you can find [here](https://www.gitlab.com/arteeh/pinetimeos). On Matrix I'm @arteeh:matrix.org and you can otherwise contact me through the links on [my website](https://www.arteeh.com/).
