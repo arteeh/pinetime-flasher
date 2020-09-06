@@ -9,6 +9,9 @@
 // For downloading files from the internet
 #include <curl/curl.h>
 
+// Multithreading, for running commands AND the UI at the same time
+#include <pthread.h>
+
 extern char arch[];
 
 extern char fileToFlash[];

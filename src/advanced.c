@@ -4,6 +4,9 @@ char arch[6];
 
 char fileToFlash[4096];
 
+int downloadDone = 0;
+int flashDone = 0;
+
 // Flash file chooser dialog
 GObject *flashFileChooser;
 
@@ -26,8 +29,9 @@ GObject *inpUrl;
 
 // Flashing dialog
 GObject *flashingDialog;
-GObject *flashingProgressBar;
-GObject *flashingOutput;
+
+// Downloading dialog
+GObject *downloadingDialog;
 
 // Initialize the UI and all event handlers under the Advanced page
 void initAdvanced()
@@ -35,26 +39,25 @@ void initAdvanced()
 	// place system arch in arch string
 	switch(getArch())
 	{
-		case 0: printf("ERROR: getArch() failed\n"); break;
 		case 1: strcpy(arch,"amd64"); break;
 		case 2: strcpy(arch,"arm64"); break;
 		case 3: strcpy(arch,"arm32"); break;
+		default: printf("ERROR: getArch() failed\n"); break;
 	}
 	
 	// Connect objects in the UI to our GObjects
+	inpUrl			= gtk_builder_get_object(builder,"inpUrl");
+	inpAddress		= gtk_builder_get_object(builder,"inpAddress");
+	btnFlashWeb		= gtk_builder_get_object(builder,"btnFlashWeb");	
+	flashGetUrl		= gtk_builder_get_object(builder,"flashGetUrl");
+	btnFlashFile		= gtk_builder_get_object(builder,"btnFlashFile");
+	confirmFlash		= gtk_builder_get_object(builder,"confirmFlash");
+	flashingDialog		= gtk_builder_get_object(builder,"flashingDialog");
+	flashGetAddress		= gtk_builder_get_object(builder,"flashGetAddress");
+	flashFileChooser	= gtk_builder_get_object(builder,"flashFileChooser");
+	downloadingDialog	= gtk_builder_get_object(builder,"downloadingDialog");
 	btnFlashBootloader	= gtk_builder_get_object(builder,"btnFlashBootloader");
 	btnFlashInfinitime	= gtk_builder_get_object(builder,"btnFlashInfinitime");
-	btnFlashWeb		= gtk_builder_get_object(builder,"btnFlashWeb");
-	btnFlashFile		= gtk_builder_get_object(builder,"btnFlashFile");
-	flashFileChooser	= gtk_builder_get_object(builder,"flashFileChooser");
-	confirmFlash		= gtk_builder_get_object(builder,"confirmFlash");
-	flashGetAddress		= gtk_builder_get_object(builder,"flashGetAddress");
-	inpAddress		= gtk_builder_get_object(builder,"inpAddress");
-	flashGetUrl		= gtk_builder_get_object(builder,"flashGetUrl");
-	inpUrl			= gtk_builder_get_object(builder,"inpUrl");
-	flashingDialog		= gtk_builder_get_object(builder,"flashingDialog");
-	flashingProgressBar	= gtk_builder_get_object(builder,"flashingProgressBar");
-	flashingOutput		= gtk_builder_get_object(builder,"flashingOutput");
 	
 	// Connect button press events to our functions
 	g_signal_connect(btnFlashBootloader,"clicked",G_CALLBACK(flashBootloader),NULL);
@@ -119,27 +122,25 @@ void flashWeb()
 	int urlSet = 0;
 	int addressSet = 0;
 	
-	// Get the url from the getUrl dialog
 	char url[1024];
-	int urlResponse = gtk_dialog_run(GTK_DIALOG(flashGetUrl));
 	
+	char addr[4];
+	char address[6];
+	
+	// Get the url from the getUrl dialog
+	int urlResponse = gtk_dialog_run(GTK_DIALOG(flashGetUrl));
 	if(urlResponse == GTK_RESPONSE_OK)
 	{
 		strcpy(url,gtk_entry_get_text(GTK_ENTRY(inpUrl)));
 		printf("URL to download from: %s\n",url);
 		urlSet = 1;
 	}
-	
 	gtk_widget_hide(GTK_WIDGET(flashGetUrl));
 	
 	if(urlSet)
 	{
 		// Get the address from the getAddress dialog
-		char addr[4];
-		char address[6];
-		
 		int addressResponse = gtk_dialog_run(GTK_DIALOG(flashGetAddress));
-		
 		if(addressResponse == GTK_RESPONSE_OK)
 		{
 			strcpy(addr,gtk_entry_get_text(GTK_ENTRY(inpAddress)));
@@ -147,8 +148,6 @@ void flashWeb()
 			printf("Address to flash to: %s\n",address);
 			addressSet = 1;
 		}
-		
-		
 		gtk_widget_hide(GTK_WIDGET(flashGetAddress));
 	}
 	
@@ -173,26 +172,25 @@ void flashFile()
 	int filenameSet = 0;
 	int addressSet = 0;
 	
-	// Get filename from file chooser dialog
 	char *filename;
-	int fileChooserResponse = gtk_dialog_run(GTK_DIALOG(flashFileChooser));
 	
+	char addr[8];
+	char address[16];
+	
+	// Get filename from file chooser dialog
+	int fileChooserResponse = gtk_dialog_run(GTK_DIALOG(flashFileChooser));
 	if(fileChooserResponse == GTK_RESPONSE_ACCEPT)
 	{
 		filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(flashFileChooser));
 		printf("File to flash: %s\n",filename);
 		filenameSet = 1;
 	}
-	
 	gtk_widget_hide(GTK_WIDGET(flashFileChooser));
 	
 	if(filenameSet)
 	{	
 		// Get the address from the getAddress dialog
-		char addr[8];
-		char address[16];
 		int addressResponse = gtk_dialog_run(GTK_DIALOG(flashGetAddress));
-		
 		if(addressResponse == GTK_RESPONSE_OK)
 		{
 			strcpy(addr,gtk_entry_get_text(GTK_ENTRY(inpAddress)));
@@ -201,7 +199,6 @@ void flashFile()
 			printf("Address to flash to: %s\n",address);
 			addressSet = 1;
 		}
-		
 		gtk_widget_hide(GTK_WIDGET(flashGetAddress));
 	}
 	
@@ -229,8 +226,10 @@ int flashConfirm(char name[],char address[])
 	// Set the dialog text
 	// FIXME: Proper string size? This one doesn't put out a warning when it's too small
 	char message[1024];
+	char shortname[512];
+	strcpy(shortname,basename(name));
 	snprintf(message,sizeof(message),"%s%s%s%s%s",
-		"Are you sure you want to flash ",name," to address ",address,"?"
+		"Are you sure you want to flash ",shortname," to address ",address,"?"
 	);
 	gtk_message_dialog_set_markup(GTK_MESSAGE_DIALOG(confirmFlash),message);
 	
@@ -291,8 +290,8 @@ void setUdev()
 	closedir(dirExists);
 }
 
-// Download a binary from the internet
-void downloadBinary(char url[])
+// We create a thread in downloadBinary, which runs the following code of downloading the file
+void *downloadBinaryThread(void *url)
 {
 	// Construct destination path
 	char path[2048];
@@ -306,8 +305,6 @@ void downloadBinary(char url[])
 	printf("to destination  %s\n",path);
 	
 	// Download file using curl
-	// FIXME: UI is stuck until file is done downloading, pthread?
-	// Maybe dialog for progress as well?
 	FILE *destinationFile;
 	CURL *curl;
 	CURLcode res;
@@ -320,27 +317,44 @@ void downloadBinary(char url[])
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, destinationFile);
 		res = curl_easy_perform(curl);
-		if(res != CURLE_OK)
-			printf("Download failed: %s\n",curl_easy_strerror(res));
+		if(res != CURLE_OK) printf("Download failed: %s\n",curl_easy_strerror(res));
 		fclose(destinationFile);
 		curl_easy_cleanup(curl);
 	}
 	
 	// Copy the destination path to fileToFlash so flash() can find it
 	strcpy(fileToFlash,path);
+	
+	// Notify the main function that downloading is finished and it can continue
+	downloadDone = 1;
+	
+	pthread_exit(NULL);
 }
 
-// Flash file in location fileToFlash to a given address on the Pinetime
-void flash(char address[])
+// Download a binary from the internet
+void downloadBinary(char url[])
 {
-	// TODO: "Flashing..." dialog for showing OpenOCD's log
+	gtk_widget_show(GTK_WIDGET(downloadingDialog));
 	
-	gtk_dialog_run(GTK_DIALOG(flashingDialog));
+	// Create the downloading thread
+	pthread_t curlThread;
+	pthread_create(&curlThread,NULL,downloadBinaryThread,(void *)url);
+	
+	// Let GTK do its thing until downloading is done
+	while(!downloadDone) gtk_main_iteration_do(0);
+	downloadDone = 0;
+	
+	gtk_widget_hide(GTK_WIDGET(downloadingDialog));
+}
 
-	printf("Flashing %s to address %s\n",fileToFlash,address);
+void *flashThread(void *address)
+{
+	// Get current working directory
+	char cwd[1024];
+	getcwd(cwd,sizeof(cwd));
 	
 	// Construct openocd command
-	char command[4215];
+	char command[512];
 	snprintf(command,sizeof(command),"%s%s%s%s%s%s%s%s%s%s%s",
 		"openocd/",arch,"/bin/openocd ",
 		"-c 'set filename ",fileToFlash," ' ",
@@ -350,20 +364,33 @@ void flash(char address[])
 	);
 	printf("%s\n",command);
 	
-	// Run it. Don't just use system() because we need the output
-	FILE *p = popen(command, "r");
-	// FIXME: What's a good buffer size for this?
-	char buffer[4096];
-	while(fgets(buffer,sizeof(buffer),p) != NULL)
-	{
-		printf("OPENOCD COMMAND BUFFER:\n%s\n",buffer);
-	}
-	
-	pclose(p);
+	// Run openocd // TODO: Get the output and put it somewhere?
+	system(command);
 	
 	// Clean up leftovers
-	// remove(fileToFlash); FIXME: DON'T HAVE THIS UNCOMMENTED WHEN TESTING ON RANDOM FILES
+	remove(fileToFlash);
 	strcpy(fileToFlash,"");
+	
+	// Tell the main thread that flashing is done
+	flashDone = 1;
+	
+	pthread_exit(NULL);
+}
+
+// Flash file in location fileToFlash to a given address on the Pinetime
+void flash(char address[])
+{
+	gtk_widget_show(GTK_WIDGET(flashingDialog));
+	
+	// Create the flashing thread
+	pthread_t fThread;
+	pthread_create(&fThread,NULL,flashThread,(void *)address);
+	
+	// TODO: Get OpenOCD's output and place it on the screen
+	
+	// Let GTK do its thing until flashing is done
+	while(!flashDone) gtk_main_iteration_do(0);
+	flashDone = 0;
 	
 	// Close the widget
 	gtk_widget_hide(GTK_WIDGET(flashingDialog));
