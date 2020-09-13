@@ -1,12 +1,15 @@
 app-id: com.arteeh.PineTime-Companion
-runtime: org.freedesktop.Platform
-runtime-version: '20.08'
-sdk: org.freedesktop.Sdk
+# Libhandy apparently depends on vala, so the freedesktop platform is not enough
+runtime: org.gnome.Platform
+runtime-version: '3.36'
+sdk: org.gnome.Sdk
 command: pinetime-companion
+
 finish-args:
   - --share=network
   - --socket=wayland
   - --allow=bluetooth
+
 modules:
   - name: libhandy
     buildsystem: meson
@@ -16,13 +19,13 @@ modules:
       - "-Dtests=false"
     sources:
       - type: git
-      - url: https://gitlab.gnome.org/GNOME/libhandy.git
+        url: https://gitlab.gnome.org/GNOME/libhandy.git
   - name: pinetime-companion
     buildsystem: simple
     build-commands:
       - cd src
+      - ls
       - make
     sources:
       - type: git
         url: https://gitlab.com/arteeh/pinetime-companion.git
-
