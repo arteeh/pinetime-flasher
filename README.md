@@ -13,13 +13,23 @@ and to replace NRF Connect/Gadgetbridge/Amazfish for:
 
 ## How to build
 
-On Debian, you need to have the following packages installed: 
+To build, you need to have the following packages installed: 
 
-`clang` (or gcc, but change the makefile)
+Debian:
+
+`clang` (or `gcc`, but change the makefile)
 `make`
 `libgtk-3-dev`
 `libhandy-1-dev`
 `libcurl4-openssl-dev`
+
+Fedora:
+
+`clang` (or `gcc`, but change the makefile)
+`make`
+`gtk3-devel`
+`libhandy-1-devel`
+`libcurl-devel`
 
 Build by running `make` in the project directory. Start the app by running `make run`.
 

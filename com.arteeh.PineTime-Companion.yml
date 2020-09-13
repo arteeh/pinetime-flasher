@@ -1,0 +1,28 @@
+app-id: com.arteeh.PineTime-Companion
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+command: pinetime-companion
+finish-args:
+  - --share=network
+  - --socket=wayland
+  - --allow=bluetooth
+modules:
+  - name: libhandy
+    buildsystem: meson
+    builddir: true
+    config-opts:
+      - "-Dexamples=false"
+      - "-Dtests=false"
+    sources:
+      - type: git
+      - url: https://gitlab.gnome.org/GNOME/libhandy.git
+  - name: pinetime-companion
+    buildsystem: simple
+    build-commands:
+      - cd src
+      - make
+    sources:
+      - type: git
+        url: https://gitlab.com/arteeh/pinetime-companion.git
+

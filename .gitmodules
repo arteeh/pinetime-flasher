@@ -1,3 +1,0 @@
-[submodule "src/dfu"]
-	path = src/dfu
-	url = https://github.com/daniel-thompson/ota-dfu-python.git
