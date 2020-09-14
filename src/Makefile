@@ -14,10 +14,10 @@ app:
 flatpak:
 	rm -f $(OUTPUT)
 	clang $(CFLAGS) $(FILES) $(LIBS) $(WARNINGS) $(DEBUG) $(OPTIMIZE) -o $(OUTPUT)
-	cp pinetime-companion /app/pinetime-companion
-	cp pinetime-companion.ui /app/pinetime-companion.ui
-	cp -r openocd /app/openocd
-	cp -r scripts /app/scripts
+	cp pinetime-companion /app/bin/pinetime-companion
+	cp pinetime-companion.ui /app/bin/pinetime-companion.ui
+	cp -r openocd /app/bin/openocd
+	cp -r scripts /app/bin/scripts
 
 clean:
 	rm -f $(OUTPUT)

@@ -3,7 +3,7 @@ app-id: com.arteeh.PineTime-Companion
 runtime: org.gnome.Platform
 runtime-version: '3.36'
 sdk: org.gnome.Sdk
-command: pinetime-companion
+command: bin/pinetime-companion
 
 finish-args:
   - --share=network
