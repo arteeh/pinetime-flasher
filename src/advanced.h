@@ -33,14 +33,15 @@ extern GObject *confirmFlashGeneric;
 
 // Function declarations
 void initAdvanced();
-int getArch();
-void setUdev();
-void downloadBinary(char url[]);
-void flash(char address[]);
-int flashConfirm(char name[],char address[]);
 void flashBootloader();
 void flashInfinitime();
 void flashWeb();
 void flashFile();
+int getArch();
+int setUdev();
+void downloadBinary(char url[]);
+void flash(char address[]);
+int flashConfirm(char name[],char address[]);
+
 
 #endif

@@ -7,29 +7,23 @@ char fileToFlash[4096];
 int downloadDone = 0;
 int flashDone = 0;
 
-// Flash file chooser dialog
+// Flash native file chooser dialog
 GObject *flashFileChooser;
-
 // Buttons
 GObject *btnFlashBootloader;
 GObject *btnFlashInfinitime;
 GObject *btnFlashWeb;
 GObject *btnFlashFile;
-
 // Confirmation message dialog
 GObject *confirmFlash;
-
 // Input address dialog
 GObject *flashGetAddress;
 GObject *inpAddress;
-
 // Input URL dialog
 GObject *flashGetUrl;
 GObject *inpUrl;
-
 // Flashing dialog
 GObject *flashingDialog;
-
 // Downloading dialog
 GObject *downloadingDialog;
 
@@ -53,7 +47,7 @@ void initAdvanced()
 	btnFlashFile		= gtk_builder_get_object(builder,"btnFlashFile");
 	confirmFlash		= gtk_builder_get_object(builder,"confirmFlash");
 	flashingDialog		= gtk_builder_get_object(builder,"flashingDialog");
-	flashGetAddress		= gtk_builder_get_object(builder,"flashGetAddress");
+	flashGetAddress	= gtk_builder_get_object(builder,"flashGetAddress");
 	flashFileChooser	= gtk_builder_get_object(builder,"flashFileChooser");
 	downloadingDialog	= gtk_builder_get_object(builder,"downloadingDialog");
 	btnFlashBootloader	= gtk_builder_get_object(builder,"btnFlashBootloader");
@@ -97,9 +91,11 @@ void flashBootloader()
 	// If user clicks yes in the confirmation dialog, commence the flashing
 	if(flashConfirm("the MCUBoot bootloader",address) == 1)
 	{
-		setUdev();
-		downloadBinary(url);
-		flash(address);
+		if(setUdev() != 2)
+		{
+			downloadBinary(url);
+			flash(address);
+		}
 	}
 }
 
@@ -111,9 +107,11 @@ void flashInfinitime()
 	
 	if(flashConfirm("InfiniTime",address) == 1)
 	{
-		setUdev();
-		downloadBinary(url);
-		flash(address);
+		if(setUdev() != 2)
+		{
+			downloadBinary(url);
+			flash(address);
+		}
 	}
 }
 
@@ -158,9 +156,11 @@ void flashWeb()
 		if(flashConfirm(url,address) == 1)
 		{
 			// Set udev rules, download the file and flash
-			setUdev();
-			downloadBinary(url);
-			flash(address);
+			if(setUdev() != 2)
+			{
+				downloadBinary(url);
+				flash(address);
+			}
 		}
 	}
 	else if(!urlSet) printf("URL download failed\n");
@@ -178,7 +178,7 @@ void flashFile()
 	char address[16];
 	
 	// Get filename from file chooser dialog
-	int fileChooserResponse = gtk_dialog_run(GTK_DIALOG(flashFileChooser));
+	int fileChooserResponse = gtk_native_dialog_run(GTK_NATIVE_DIALOG(flashFileChooser));
 	if(fileChooserResponse == GTK_RESPONSE_ACCEPT)
 	{
 		filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(flashFileChooser));
@@ -209,9 +209,10 @@ void flashFile()
 		if(flashConfirm(filename,address) == 1)
 		{
 			// Set udev rules and flash
-			setUdev();
-			strcpy(fileToFlash,filename);
-			flash(address);
+			if(setUdev() != 2)
+			{
+				flash(address);
+			}
 		}
 	}
 	else if(!filenameSet) printf("File picking failed\n");
@@ -252,42 +253,64 @@ int flashConfirm(char name[],char address[])
 }
 
 // Copy OpenOCD Udev rules to /etc/udev/rules.d/
-void setUdev()
+int setUdev()
 {
+	/*
+	0: installed correctly, continue
+	1: already installed, continue
+	2: failed to install, abort
+	*/
+	int retVal;
+	
 	// If the udev rule file already exists, skip
 	if(access("/etc/udev/rules.d/60-openocd.rules",F_OK) != -1)
 	{
 		printf("OpenOCD udev rule already installed, skipping\n");
-		return;
+		retVal = 1;
 	}
-	
-	printf("Setting udev rules for ST-Link flashing\n");
-	DIR *dirExists;
-	dirExists = opendir("/etc/udev/rules.d/");
-	if (dirExists)
+	else
 	{
-		// Get current working directory, because as root we won't know where to find it
-		char path[PATH_MAX];
-		getcwd(path,sizeof(path));
+		printf("Setting udev rules for ST-Link flashing\n");
+		DIR *dirExists;
+		dirExists = opendir("/etc/udev/rules.d/");
+		if (dirExists)
+		{
+			// Get current working directory, because as root we won't know where to find it
+			char path[PATH_MAX];
+			getcwd(path,sizeof(path));
+			
+			// Construct the command we're going to execute.
+			// pkexec: run a command as root user
+			char command[4164];
+			snprintf(command,sizeof(command),"%s%s%s%s%s",
+				"pkexec cp ",path,"/openocd/",arch,
+				"/contrib/60-openocd.rules /etc/udev/rules.d/"
+			);
+			printf("%s\n",command);
+			
+			// Execute
+			system(command);
+			
+			// Reload udev rules, FIXME: this means two root password requests in a row, fix?
+			char command2[] = "pkexec udevadm control --reload-rules";
+			printf("%s\n",command2);
+			system(command2);
+		}
+		closedir(dirExists);
 		
-		// Construct the command we're going to execute.
-		// pkexec: run a command as root user
-		char command[4164];
-		snprintf(command,sizeof(command),"%s%s%s%s%s",
-			"pkexec cp ",path,"/openocd/",arch,
-			"/contrib/60-openocd.rules /etc/udev/rules.d/"
-		);
-		printf("%s\n",command);
-		
-		// Execute
-		system(command);
-		
-		// Reload udev rules, FIXME: this means two root password requests in a row, fix?
-		char command2[] = "pkexec udevadm control --reload-rules";
-		printf("%s\n",command2);
-		system(command2);
+		// Check again to make sure it installed properly
+		if(access("/etc/udev/rules.d/60-openocd.rules",F_OK) != -1)
+		{
+			printf("OpenOCD udev rule installed\n");
+			retVal = 0;
+		}
+		else
+		{
+			printf("ERROR: OpenOCD udev rule failed to install\n");
+			retVal = 2;
+		}
 	}
-	closedir(dirExists);
+	return retVal;
 }
 
 // We create a thread in downloadBinary, which runs the following code of downloading the file
