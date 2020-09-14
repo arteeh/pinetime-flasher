@@ -22,10 +22,9 @@ modules:
         url: https://gitlab.gnome.org/GNOME/libhandy.git
   - name: pinetime-companion
     buildsystem: simple
+    subdir: src
     build-commands:
-      - cd src
-      - ls
-      - make
+      - make flatpak
     sources:
       - type: git
         url: https://gitlab.com/arteeh/pinetime-companion.git

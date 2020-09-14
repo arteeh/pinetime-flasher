@@ -11,8 +11,17 @@ OPTIMIZE = -O2
 app:
 	clang $(CFLAGS) $(FILES) $(LIBS) $(WARNINGS) $(DEBUG) $(OPTIMIZE) -o $(OUTPUT)
 
+flatpak:
+	rm -f $(OUTPUT)
+	clang $(CFLAGS) $(FILES) $(LIBS) $(WARNINGS) $(DEBUG) $(OPTIMIZE) -o $(OUTPUT)
+	cp pinetime-companion /app/pinetime-companion
+	cp pinetime-companion.ui /app/pinetime-companion.ui
+	cp -r openocd /app/openocd
+	cp -r scripts /app/scripts
+
 clean:
 	rm -f $(OUTPUT)
 
 run:
 	./$(OUTPUT)
+
