@@ -18,7 +18,7 @@ int main(int argc,char *argv[])
 	g_signal_connect(window,"destroy",G_CALLBACK(gtk_main_quit),NULL);
 	
 	// Set up other pages
-	//initUpdates();
+	initUpdates();
 	initAdvanced();
 	
 	// Show the window

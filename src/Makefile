@@ -13,6 +13,7 @@ app:
 	clang $(CFLAGS) $(FILES) $(LIBS) $(WARNINGS) $(DEBUG) $(OPTIMIZE) -o $(OUTPUT)
 
 clean:
+	rm -f ui.c
 	rm -f $(OUTPUT)
 
 run:
