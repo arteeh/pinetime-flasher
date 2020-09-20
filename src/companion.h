@@ -1,5 +1,5 @@
-#ifndef PINETIME_COMPANION_H
-#define PINETIME_COMPANION_H
+#ifndef COMPANION_H
+#define COMPANION_H
 
 // time() for debugging
 #include <sys/time.h>

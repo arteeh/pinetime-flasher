@@ -1,7 +1,7 @@
 #ifndef ADVANCED_H
 #define ADVANCED_H
 
-#include "pinetime-companion.h"
+#include "companion.h"
 
 // For uname() in getArch()
 #include <sys/utsname.h>

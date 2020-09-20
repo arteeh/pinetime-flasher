@@ -1,4 +1,4 @@
-#include "pinetime-companion.h"
+#include "companion.h"
 #include "updates.h"
 
 void initUpdates()
