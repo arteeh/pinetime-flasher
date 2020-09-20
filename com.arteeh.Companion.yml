@@ -31,4 +31,5 @@ modules:
       - cp -r scripts /app/bin/scripts
     sources:
       - type: git
+      # url: https://gitlab.com/arteeh/pinetime-companion
         url: file:///home/arteeh/pinetime-companion
