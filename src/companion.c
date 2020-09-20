@@ -9,7 +9,7 @@ int main(int argc,char *argv[])
 	hdy_init();
 	
 	// Construct a GtkBuilder instance and fill it with the main UI
-	builder = gtk_builder_new_from_resource("/com/arteeh/PineTime-Companion/companion.ui");
+	builder = gtk_builder_new_from_resource("/com/arteeh/Companion/companion.ui");
 	
 	// Connect window object in the builder to our own window object
 	window = gtk_builder_get_object(builder,"window");

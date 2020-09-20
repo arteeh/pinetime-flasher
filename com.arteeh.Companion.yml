@@ -26,10 +26,9 @@ modules:
     build-commands:
       - make
       - mkdir /app/bin
-      - cp pinetime-companion /app/bin/companion
-      - cp pinetime-companion.ui /app/bin/companion.ui
+      - cp companion /app/bin/companion
       - cp -r openocd /app/bin/openocd
       - cp -r scripts /app/bin/scripts
     sources:
       - type: git
-        url: https://gitlab.com/arteeh/pinetime-companion.git
+        url: file:///home/arteeh/pinetime-companion
