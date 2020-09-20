@@ -28,7 +28,7 @@ Fedora:
 `clang` (or `gcc`, but change the makefile)
 `make`
 `gtk3-devel`
-`libhandy-1-devel`
+`libhandy1-devel`
 `libcurl-devel`
 
 Build by running `make` in the project directory. Start the app by running `make run`.

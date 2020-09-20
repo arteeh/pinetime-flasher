@@ -253,6 +253,7 @@ int flashConfirm(char name[],char address[])
 }
 
 // Copy OpenOCD Udev rules to /etc/udev/rules.d/
+// TODO: How to get this to work in flatpak without asking for full filesystem permissions?
 int setUdev()
 {
 	/*

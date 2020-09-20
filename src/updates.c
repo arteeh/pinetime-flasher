@@ -3,7 +3,7 @@
 
 void initUpdates()
 {
-	btEnabled();
+	//btEnabled();
 }
 
 // Check if Bluetooth is enabled
