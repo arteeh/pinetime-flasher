@@ -33,6 +33,8 @@ Fedora:
 
 Build by running `make` in the project directory. Start the app by running `make run`.
 
+To build a flatpak, run flatpak.sh in the project root.
+
 ## Who am I?
 
 I've been casually hanging around the PineTime community since about November 2019, talking to people in the chat. I'm also working on UI designs and mockups for the PineTime which you can find [here](https://www.gitlab.com/arteeh/pinetimeos). On Matrix I'm @arteeh:matrix.org and you can otherwise contact me through the links on [my website](https://www.arteeh.com/).
