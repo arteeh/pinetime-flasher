@@ -102,7 +102,7 @@ void flashBootloader()
 void flashInfinitime()
 {
 	// FIXME: This is not guaranteed to be the latest version
-	char url[] = "https://github.com/JF002/Pinetime/releases/download/0.8.0-develop/pinetime-mcuboot-app-0.8.0-develop.bin";
+	char url[] = "https://github.com/JF002/Pinetime/releases/download/0.8.2/pinetime-app-0.8.2.bin";
 	char address[] = "0x8000";
 	
 	if(flashConfirm("InfiniTime",address) == 1)
@@ -183,6 +183,7 @@ void flashFile()
 	{
 		filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(flashFileChooser));
 		printf("File to flash: %s\n",filename);
+		strcpy(fileToFlash,filename);
 		filenameSet = 1;
 	}
 	gtk_widget_hide(GTK_WIDGET(flashFileChooser));
@@ -392,7 +393,7 @@ void *flashThread(void *address)
 	system(command);
 	
 	// Clean up leftovers
-	remove(fileToFlash);
+	//remove(fileToFlash); TODO: ???
 	strcpy(fileToFlash,"");
 	
 	// Tell the main thread that flashing is done
