@@ -47,7 +47,7 @@ void initAdvanced()
 	btnFlashFile		= gtk_builder_get_object(builder,"btnFlashFile");
 	confirmFlash		= gtk_builder_get_object(builder,"confirmFlash");
 	flashingDialog		= gtk_builder_get_object(builder,"flashingDialog");
-	flashGetAddress	= gtk_builder_get_object(builder,"flashGetAddress");
+	flashGetAddress		= gtk_builder_get_object(builder,"flashGetAddress");
 	flashFileChooser	= gtk_builder_get_object(builder,"flashFileChooser");
 	downloadingDialog	= gtk_builder_get_object(builder,"downloadingDialog");
 	btnFlashBootloader	= gtk_builder_get_object(builder,"btnFlashBootloader");
@@ -85,7 +85,8 @@ int getArch()
 
 void flashBootloader()
 {
-	char url[] = "https://github.com/lupyuen/pinetime-rust-mynewt/releases/latest/download/mynewt_nosemi.elf.bin";
+	// FIXME: This is not guaranteed to be the latest version
+	char url[] = "https://github.com/lupyuen/pinetime-rust-mynewt/releases/download/v5.0.4/mynewt.elf.bin";
 	char address[] = "0x0000";
 	
 	// If user clicks yes in the confirmation dialog, commence the flashing
@@ -102,7 +103,7 @@ void flashBootloader()
 void flashInfinitime()
 {
 	// FIXME: This is not guaranteed to be the latest version
-	char url[] = "https://github.com/JF002/Pinetime/releases/download/0.8.2/pinetime-app-0.8.2.bin";
+	char url[] = "https://github.com/JF002/Pinetime/releases/download/0.8.2/image-0.8.2.bin";
 	char address[] = "0x8000";
 	
 	if(flashConfirm("InfiniTime",address) == 1)
@@ -393,7 +394,7 @@ void *flashThread(void *address)
 	system(command);
 	
 	// Clean up leftovers
-	//remove(fileToFlash); TODO: ???
+	remove(fileToFlash); //TODO: ???
 	strcpy(fileToFlash,"");
 	
 	// Tell the main thread that flashing is done
