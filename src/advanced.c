@@ -5,7 +5,7 @@ char arch[6];
 char fileToFlash[4096];
 char filePath[4096];
 char url[4096];
-int address = 0x0404;
+char address[8];
 int urlSet = 0;
 int addressSet = 0;
 int filePathSet = 0;
@@ -90,11 +90,13 @@ void initAdvanced()
 
 void clean()
 {
-	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowMain));
+	gtk_stack_set_visible_child(
+		GTK_STACK(advancedWindows),
+		GTK_WIDGET(advancedWindowMain));
 	strcpy(url,"");
 	strcpy(fileToFlash,"");
 	strcpy(filePath,"");
-	address = 0x0404;
+	strcpy(address,"0x0404");
 	flashDone = 0;
 	urlSet = 0;
 	addressSet = 0;
@@ -126,7 +128,7 @@ void _btnFlashBootloader()
 	// FIXME: This is not guaranteed to be the latest version
 	strcpy(url,"https://github.com/lupyuen/pinetime-rust-mynewt/releases/download/v5.0.4/mynewt.elf.bin");
 	urlSet = 1;
-	address = 0x0000;
+	strcpy(address,"0x0000");
 	addressSet = 1;
 	
 	flashConfirm("the MCUBoot bootloader");
@@ -143,7 +145,9 @@ void _btnFlashInfinitime()
 {
 	// FIXME: This is not guaranteed to be the latest version
 	strcpy(url,"https://github.com/JF002/Pinetime/releases/download/0.8.2/image-0.8.2.bin");
-	address = 0x8000;
+	urlSet = 1;
+	strcpy(address,"0x8000");
+	addressSet = 1;
 	
 	flashConfirm("InfiniTime");
 	if(confirmed == 1) setUdev();
@@ -191,15 +195,19 @@ void _btnFlashFile()
 		filePathSet = -1;
 		return;
 	}
-	gtk_widget_hide(GTK_WIDGET(getFileChooser));
 	
 	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowGetAddress));
 	while(addressSet == 0) gtk_main_iteration_do(0);
-	if(addressSet == -1) printf("Address set failed\n"); clean(); return;
-	
+	if(addressSet == -1)
+	{
+		printf("Address set failed\n");
+		clean();
+		return;
+	}
+		
 	flashConfirm(filePath);
 	if(confirmed == 1) setUdev();
-	if(confirmed == 1 && udevSet && filePathSet && addressSet) flash(1);
+	if(confirmed == 1 && udevSet && filePathSet && addressSet) flash(0);
 	clean();
 }
 
@@ -226,9 +234,12 @@ void _btnGetAddressCancel()
 
 void _btnGetAddressContinue()
 {
-	strcpy(address,gtk_entry_get_text(GTK_ENTRY(inpGetAddress)));
+	snprintf(address,sizeof(address),"%s%s",
+		"0x",
+		gtk_entry_get_text(GTK_ENTRY(inpGetAddress))
+	);
 	addressSet = 1;
-	printf("Address to flash to: 0x%i\n",address);
+	printf("Address to flash to: %s\n",address);
 }
 
 void _btnConfirmCancel()
@@ -246,14 +257,15 @@ void _btnConfirmContinue()
 
 void flashConfirm(char name[])
 {
+	printf("entering flashConfirm\n");
 	char message[1024];
 	char shortname[512];
 	strcpy(shortname,basename(name));
 		
-	snprintf(message,sizeof(message),"%s%s%s%i%s",
+	snprintf(message,sizeof(message),"%s%s%s%s%s",
 		"<span size=\"large\" font_weight=\"bold\">Are you sure you want to flash ",
 		shortname,
-		" to address 0x",
+		" to address ",
 		address,
 		"?</span>"
 	);
@@ -262,6 +274,8 @@ void flashConfirm(char name[])
 	while(confirmed == 0) gtk_main_iteration_do(0);
 	if(confirmed == 1) printf("Confirmed\n");
 	else if(confirmed == -1) printf("Cancelled\n");
+	
+	printf("leaving flashConfirm\n");
 }
 
 // Copy OpenOCD Udev rules to /etc/udev/rules.d/
@@ -363,7 +377,9 @@ void *downloadBinaryThread(void * arg)
 // Download a binary from the internet
 void downloadBinary()
 {
-	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowDownloading));
+	gtk_stack_set_visible_child(
+		GTK_STACK(advancedWindows),
+		GTK_WIDGET(advancedWindowDownloading));
 	
 	// Create the downloading thread
 	pthread_t curlThread;
@@ -382,10 +398,10 @@ void *flashThread(void * removeAfter)
 	
 	// Construct openocd command
 	char command[512];
-	snprintf(command,sizeof(command),"%s%s%s%s%s%s%s%i%s%s%s",
+	snprintf(command,sizeof(command),"%s%s%s%s%s%s%s%s%s%s%s",
 		"openocd/",arch,"/bin/openocd ",
-		"-c 'set filePath ",fileToFlash," ' ",
-		"-c 'set address 0x",address," ' ",
+		"-c 'set filename ",fileToFlash," ' ",
+		"-c 'set address ",address," ' ",
 		"-f scripts/swd-stlink.ocd ",
 		"-f scripts/flash-program.ocd"
 	);
@@ -410,7 +426,7 @@ void flash(int removeAfter)
 	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowFlashing));
 	
 	pthread_t fThread;
-	pthread_create(&fThread,NULL,flashThread,(void *)removeAfter);
+	pthread_create(&fThread,NULL,flashThread,(void *) (size_t) removeAfter);
 	
 	// TODO: Get OpenOCD's output and place it on the screen
 	
