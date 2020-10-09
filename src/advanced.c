@@ -3,273 +3,276 @@
 char arch[6];
 
 char fileToFlash[4096];
-
+char filePath[4096];
+char url[4096];
+int address = 0x0404;
+int urlSet = 0;
+int addressSet = 0;
+int filePathSet = 0;
 int downloadDone = 0;
 int flashDone = 0;
+int confirmed = 0;
+int udevSet = 0;
 
-// Flash native file chooser dialog
-GObject *flashFileChooser;
-// Buttons
+// Windows
+GObject *advancedWindows;
+GObject *advancedWindowMain;
+GObject *advancedWindowGetUrl;
+GObject *advancedWindowGetAddress;
+GObject *advancedWindowConfirm;
+GObject *advancedWindowDownloading;
+GObject *advancedWindowFlashing;
+
+// advancedWindowMain
 GObject *btnFlashBootloader;
 GObject *btnFlashInfinitime;
 GObject *btnFlashWeb;
 GObject *btnFlashFile;
-// Confirmation message dialog
-GObject *confirmFlash;
-// Input address dialog
-GObject *flashGetAddress;
-GObject *inpAddress;
-// Input URL dialog
-GObject *flashGetUrl;
-GObject *inpUrl;
-// Flashing dialog
-GObject *flashingDialog;
-// Downloading dialog
-GObject *downloadingDialog;
+
+// advancedWindowGetUrl
+GObject *inpGetUrl;
+GObject *btnGetUrlCancel;
+GObject *btnGetUrlContinue;
+
+// advancedWindowGetAddress
+GObject *inpGetAddress;
+GObject *btnGetAddressCancel;
+GObject *btnGetAddressContinue;
+
+// advancedWindowConfirm
+GObject *lblConfirm;
+GObject *btnConfirmCancel;
+GObject *btnConfirmContinue;
+
+// Flash native file chooser dialog
+GObject *getFileChooser;
 
 // Initialize the UI and all event handlers under the Advanced page
 void initAdvanced()
 {
-	// place system arch in arch string
-	switch(getArch())
-	{
-		case 1: strcpy(arch,"amd64"); break;
-		case 2: strcpy(arch,"arm64"); break;
-		case 3: strcpy(arch,"arm32"); break;
-		default: printf("ERROR: getArch() failed\n"); break;
-	}
+	setArch();
 	
 	// Connect objects in the UI to our GObjects
-	inpUrl			= gtk_builder_get_object(builder,"inpUrl");
-	inpAddress		= gtk_builder_get_object(builder,"inpAddress");
-	btnFlashWeb		= gtk_builder_get_object(builder,"btnFlashWeb");	
-	flashGetUrl		= gtk_builder_get_object(builder,"flashGetUrl");
-	btnFlashFile		= gtk_builder_get_object(builder,"btnFlashFile");
-	confirmFlash		= gtk_builder_get_object(builder,"confirmFlash");
-	flashingDialog		= gtk_builder_get_object(builder,"flashingDialog");
-	flashGetAddress		= gtk_builder_get_object(builder,"flashGetAddress");
-	flashFileChooser	= gtk_builder_get_object(builder,"flashFileChooser");
-	downloadingDialog	= gtk_builder_get_object(builder,"downloadingDialog");
-	btnFlashBootloader	= gtk_builder_get_object(builder,"btnFlashBootloader");
-	btnFlashInfinitime	= gtk_builder_get_object(builder,"btnFlashInfinitime");
+	advancedWindows			= gtk_builder_get_object(builder,"advancedWindows");
+	advancedWindowMain		= gtk_builder_get_object(builder,"advancedWindowMain");
+	advancedWindowGetUrl		= gtk_builder_get_object(builder,"advancedWindowGetUrl");
+	advancedWindowGetAddress	= gtk_builder_get_object(builder,"advancedWindowGetAddress");
+	advancedWindowConfirm		= gtk_builder_get_object(builder,"advancedWindowConfirm");
+	advancedWindowDownloading	= gtk_builder_get_object(builder,"advancedWindowDownloading");
+	advancedWindowFlashing		= gtk_builder_get_object(builder,"advancedWindowFlashing");
+	btnFlashBootloader		= gtk_builder_get_object(builder,"btnFlashBootloader");
+	btnFlashInfinitime		= gtk_builder_get_object(builder,"btnFlashInfinitime");
+	btnFlashWeb			= gtk_builder_get_object(builder,"btnFlashWeb");
+	btnFlashFile			= gtk_builder_get_object(builder,"btnFlashFile");
+	inpGetUrl			= gtk_builder_get_object(builder,"inpGetUrl");
+	btnGetUrlCancel			= gtk_builder_get_object(builder,"btnGetUrlCancel");
+	btnGetUrlContinue		= gtk_builder_get_object(builder,"btnGetUrlContinue");
+	inpGetAddress			= gtk_builder_get_object(builder,"inpGetAddress");
+	btnGetAddressCancel		= gtk_builder_get_object(builder,"btnGetAddressCancel");
+	btnGetAddressContinue		= gtk_builder_get_object(builder,"btnGetAddressContinue");
+	lblConfirm			= gtk_builder_get_object(builder,"lblConfirm");
+	btnConfirmCancel		= gtk_builder_get_object(builder,"btnConfirmCancel");
+	btnConfirmContinue		= gtk_builder_get_object(builder,"btnConfirmContinue");	
+	getFileChooser			= gtk_builder_get_object(builder,"getFileChooser");
 	
 	// Connect button press events to our functions
-	g_signal_connect(btnFlashBootloader,"clicked",G_CALLBACK(flashBootloader),NULL);
-	g_signal_connect(btnFlashInfinitime,"clicked",G_CALLBACK(flashInfinitime),NULL);
-	g_signal_connect(btnFlashWeb,"clicked",G_CALLBACK(flashWeb),NULL);
-	g_signal_connect(btnFlashFile,"clicked",G_CALLBACK(flashFile),NULL);
+	g_signal_connect(btnFlashBootloader,"clicked",G_CALLBACK(_btnFlashBootloader),NULL);
+	g_signal_connect(btnFlashInfinitime,"clicked",G_CALLBACK(_btnFlashInfinitime),NULL);
+	g_signal_connect(btnFlashWeb,"clicked",G_CALLBACK(_btnFlashWeb),NULL);
+	g_signal_connect(btnFlashFile,"clicked",G_CALLBACK(_btnFlashFile),NULL);
+	g_signal_connect(btnGetUrlCancel,"clicked",G_CALLBACK(_btnGetUrlCancel),NULL);
+	g_signal_connect(btnGetUrlContinue,"clicked",G_CALLBACK(_btnGetUrlContinue),NULL);
+	g_signal_connect(btnGetAddressCancel,"clicked",G_CALLBACK(_btnGetAddressCancel),NULL);
+	g_signal_connect(btnGetAddressContinue,"clicked",G_CALLBACK(_btnGetAddressContinue),NULL);
+	g_signal_connect(btnConfirmCancel,"clicked",G_CALLBACK(_btnConfirmCancel),NULL);
+	g_signal_connect(btnConfirmContinue,"clicked",G_CALLBACK(_btnConfirmContinue),NULL);
 }
 
-/*
-Get CPU architecture
-return 1 = amd64
-return 2 = arm64
-return 3 = arm32
-*/
-int getArch()
+void clean()
+{
+	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowMain));
+	strcpy(url,"");
+	strcpy(fileToFlash,"");
+	strcpy(filePath,"");
+	address = 0x0404;
+	flashDone = 0;
+	urlSet = 0;
+	addressSet = 0;
+	filePathSet = 0;
+	downloadDone = 0;
+	flashDone = 0;
+	confirmed = 0;
+	udevSet = 0;
+}
+
+void setArch()
 {
 	struct utsname *systemData = malloc(sizeof(struct utsname));
 	uname(systemData);
-	char arch[8];
 	strcpy(arch,systemData->machine);
 	free(systemData);
+	
+	// TODO: Test on arm64 and arm32 architectures
+	if(strcmp(arch,"x86_64") == 0) strcpy(arch,"amd64");
+	else if(strcmp(arch,"arm64") == 0) strcpy(arch,"arm64");
+	else if(strcmp(arch,"arm32") == 0) strcpy(arch,"arm32");
+	else printf("ERROR: setArch() failed\n");
+	
 	printf("System architecture: %s\n",arch);
-	
-	int retVal = 0;
-	
-	if(strcmp(arch,"x86_64") == 0) retVal = 1;
-	// TODO: Get arm64 and arm32 architectures
-	
-	return retVal;
 }
 
-void flashBootloader()
+void _btnFlashBootloader()
 {
 	// FIXME: This is not guaranteed to be the latest version
-	char url[] = "https://github.com/lupyuen/pinetime-rust-mynewt/releases/download/v5.0.4/mynewt.elf.bin";
-	char address[] = "0x0000";
+	strcpy(url,"https://github.com/lupyuen/pinetime-rust-mynewt/releases/download/v5.0.4/mynewt.elf.bin");
+	urlSet = 1;
+	address = 0x0000;
+	addressSet = 1;
 	
-	// If user clicks yes in the confirmation dialog, commence the flashing
-	if(flashConfirm("the MCUBoot bootloader",address) == 1)
+	flashConfirm("the MCUBoot bootloader");
+	if(confirmed == 1) setUdev();
+	if(confirmed == 1 && udevSet && urlSet && addressSet)
 	{
-		if(setUdev() != 2)
-		{
-			downloadBinary(url);
-			flash(address);
-		}
+		downloadBinary();
+		flash(1);
 	}
+	clean();
 }
 
-void flashInfinitime()
+void _btnFlashInfinitime()
 {
 	// FIXME: This is not guaranteed to be the latest version
-	char url[] = "https://github.com/JF002/Pinetime/releases/download/0.8.2/image-0.8.2.bin";
-	char address[] = "0x8000";
+	strcpy(url,"https://github.com/JF002/Pinetime/releases/download/0.8.2/image-0.8.2.bin");
+	address = 0x8000;
 	
-	if(flashConfirm("InfiniTime",address) == 1)
+	flashConfirm("InfiniTime");
+	if(confirmed == 1) setUdev();
+	if(confirmed == 1 && udevSet && urlSet && addressSet)
 	{
-		if(setUdev() != 2)
-		{
-			downloadBinary(url);
-			flash(address);
-		}
+		downloadBinary();
+		flash(1);
 	}
+	clean();
 }
 
-void flashWeb()
+void _btnFlashWeb()
 {
-	int urlSet = 0;
-	int addressSet = 0;
+	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowGetUrl));
+	while(urlSet == 0) gtk_main_iteration_do(0);
+	if(urlSet == -1) return;
+	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowGetAddress));
+	while(addressSet == 0) gtk_main_iteration_do(0);
+	if(addressSet == -1) return;
 	
-	char url[1024];
-	
-	char addr[4];
-	char address[6];
-	
-	// Get the url from the getUrl dialog
-	int urlResponse = gtk_dialog_run(GTK_DIALOG(flashGetUrl));
-	if(urlResponse == GTK_RESPONSE_OK)
+	flashConfirm(url);
+	if(confirmed == 1) setUdev();
+	if(confirmed == 1 && udevSet && urlSet && addressSet)
 	{
-		strcpy(url,gtk_entry_get_text(GTK_ENTRY(inpUrl)));
-		printf("URL to download from: %s\n",url);
-		urlSet = 1;
+		downloadBinary();
+		flash(1);
 	}
-	gtk_widget_hide(GTK_WIDGET(flashGetUrl));
-	
-	if(urlSet)
-	{
-		// Get the address from the getAddress dialog
-		int addressResponse = gtk_dialog_run(GTK_DIALOG(flashGetAddress));
-		if(addressResponse == GTK_RESPONSE_OK)
-		{
-			strcpy(addr,gtk_entry_get_text(GTK_ENTRY(inpAddress)));
-			snprintf(address,sizeof(address),"%s%s","0x",addr);
-			printf("Address to flash to: %s\n",address);
-			addressSet = 1;
-		}
-		gtk_widget_hide(GTK_WIDGET(flashGetAddress));
-	}
-	
-	// Check if the address is set
-	if(urlSet && addressSet)
-	{
-		// Do a last confirmation with the user
-		if(flashConfirm(url,address) == 1)
-		{
-			// Set udev rules, download the file and flash
-			if(setUdev() != 2)
-			{
-				downloadBinary(url);
-				flash(address);
-			}
-		}
-	}
-	else if(!urlSet) printf("URL download failed\n");
-	else if(!addressSet) printf("Address set failed\n");
+	clean();
 }
 
-void flashFile()
+void _btnFlashFile()
 {
-	int filenameSet = 0;
-	int addressSet = 0;
-	
-	char *filename;
-	
-	char addr[8];
-	char address[16];
-	
-	// Get filename from file chooser dialog
-	int fileChooserResponse = gtk_native_dialog_run(GTK_NATIVE_DIALOG(flashFileChooser));
+	// Get filePath from file chooser dialog
+	int fileChooserResponse = gtk_native_dialog_run(GTK_NATIVE_DIALOG(getFileChooser));
 	if(fileChooserResponse == GTK_RESPONSE_ACCEPT)
 	{
-		filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(flashFileChooser));
-		printf("File to flash: %s\n",filename);
-		strcpy(fileToFlash,filename);
-		filenameSet = 1;
+		strcpy(filePath,gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(getFileChooser)));
+		printf("File to flash: %s\n",filePath);
+		strcpy(fileToFlash,filePath);
+		filePathSet = 1;
 	}
-	gtk_widget_hide(GTK_WIDGET(flashFileChooser));
-	
-	if(filenameSet)
-	{	
-		// Get the address from the getAddress dialog
-		int addressResponse = gtk_dialog_run(GTK_DIALOG(flashGetAddress));
-		if(addressResponse == GTK_RESPONSE_OK)
-		{
-			strcpy(addr,gtk_entry_get_text(GTK_ENTRY(inpAddress)));
-			printf("addr: %s\n",addr);
-			snprintf(address,sizeof(address),"%s%s","0x",addr);
-			printf("Address to flash to: %s\n",address);
-			addressSet = 1;
-		}
-		gtk_widget_hide(GTK_WIDGET(flashGetAddress));
-	}
-	
-	// Check if both the filename and the address are set
-	if(filenameSet && addressSet)
+	else
 	{
-		// Do a last confirmation with the user
-		if(flashConfirm(filename,address) == 1)
-		{
-			// Set udev rules and flash
-			if(setUdev() != 2)
-			{
-				flash(address);
-			}
-		}
+		printf("File chooser cancelled\n");
+		filePathSet = -1;
+		return;
 	}
-	else if(!filenameSet) printf("File picking failed\n");
-	else if(!addressSet) printf("Address set failed\n");
+	gtk_widget_hide(GTK_WIDGET(getFileChooser));
+	
+	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowGetAddress));
+	while(addressSet == 0) gtk_main_iteration_do(0);
+	if(addressSet == -1) printf("Address set failed\n"); clean(); return;
+	
+	flashConfirm(filePath);
+	if(confirmed == 1) setUdev();
+	if(confirmed == 1 && udevSet && filePathSet && addressSet) flash(1);
+	clean();
 }
 
-// Handle input from flash confirmation dialog, used for flash*() functions
-int flashConfirm(char name[],char address[])
+void _btnGetUrlCancel()
 {
-	int retVal;
-	
-	// Set the dialog text
-	// FIXME: Proper string size? This one doesn't put out a warning when it's too small
+	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowMain));
+	urlSet = -1;
+	printf("URL input cancelled\n");
+}
+
+void _btnGetUrlContinue()
+{
+	strcpy(url,gtk_entry_get_text(GTK_ENTRY(inpGetUrl)));
+	urlSet = 1;
+	printf("URL to download from: %s\n",url);
+}
+
+void _btnGetAddressCancel()
+{
+	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowMain));
+	addressSet = -1;
+	printf("Address input cancelled\n");
+}
+
+void _btnGetAddressContinue()
+{
+	strcpy(address,gtk_entry_get_text(GTK_ENTRY(inpGetAddress)));
+	addressSet = 1;
+	printf("Address to flash to: 0x%i\n",address);
+}
+
+void _btnConfirmCancel()
+{
+	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowMain));
+	confirmed = -1;
+	printf("Confirmation cancelled\n");
+}
+
+void _btnConfirmContinue()
+{
+	confirmed = 1;
+	printf("Confirmation continued\n");
+}
+
+void flashConfirm(char name[])
+{
 	char message[1024];
 	char shortname[512];
 	strcpy(shortname,basename(name));
-	snprintf(message,sizeof(message),"%s%s%s%s%s",
-		"Are you sure you want to flash ",shortname," to address ",address,"?"
+		
+	snprintf(message,sizeof(message),"%s%s%s%i%s",
+		"<span size=\"large\" font_weight=\"bold\">Are you sure you want to flash ",
+		shortname,
+		" to address 0x",
+		address,
+		"?</span>"
 	);
-	gtk_message_dialog_set_markup(GTK_MESSAGE_DIALOG(confirmFlash),message);
-	
-	// Return whether the user has pressed yes or no
-	int result = gtk_dialog_run(GTK_DIALOG(confirmFlash));
-	switch(result)
-	{
-		case GTK_RESPONSE_YES:
-			retVal = 1;
-			break;
-		default:
-			retVal = 0;
-			break;
-	}
-	
-	// Close the widget
-	gtk_widget_hide(GTK_WIDGET(confirmFlash));
-	
-	return retVal;
+	gtk_label_set_markup(GTK_LABEL(lblConfirm),message);
+	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowConfirm));
+	while(confirmed == 0) gtk_main_iteration_do(0);
+	if(confirmed == 1) printf("Confirmed\n");
+	else if(confirmed == -1) printf("Cancelled\n");
 }
 
 // Copy OpenOCD Udev rules to /etc/udev/rules.d/
 // TODO: How to get this to work in flatpak without asking for full filesystem permissions?
-int setUdev()
+void setUdev()
 {
-	/*
-	0: installed correctly, continue
-	1: already installed, continue
-	2: failed to install, abort
-	*/
-	int retVal;
-	
 	// If the udev rule file already exists, skip
 	if(access("/etc/udev/rules.d/60-openocd.rules",F_OK) != -1)
 	{
 		printf("OpenOCD udev rule already installed, skipping\n");
-		retVal = 1;
+		udevSet = 1;
 	}
 	else
 	{
@@ -299,25 +302,25 @@ int setUdev()
 			printf("%s\n",command2);
 			system(command2);
 		}
+		else printf("ERROR: Can't find /etc/udev/rules.d/\n");
 		closedir(dirExists);
 		
 		// Check again to make sure it installed properly
 		if(access("/etc/udev/rules.d/60-openocd.rules",F_OK) != -1)
 		{
 			printf("OpenOCD udev rule installed\n");
-			retVal = 0;
+			udevSet = 2;
 		}
 		else
 		{
 			printf("ERROR: OpenOCD udev rule failed to install\n");
-			retVal = 2;
+			udevSet = -1;
 		}
 	}
-	return retVal;
 }
 
 // We create a thread in downloadBinary, which runs the following code of downloading the file
-void *downloadBinaryThread(void *url)
+void *downloadBinaryThread(void * arg)
 {
 	// Construct destination path
 	char path[2048];
@@ -358,22 +361,20 @@ void *downloadBinaryThread(void *url)
 }
 
 // Download a binary from the internet
-void downloadBinary(char url[])
+void downloadBinary()
 {
-	gtk_widget_show(GTK_WIDGET(downloadingDialog));
+	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowDownloading));
 	
 	// Create the downloading thread
 	pthread_t curlThread;
-	pthread_create(&curlThread,NULL,downloadBinaryThread,(void *)url);
+	pthread_create(&curlThread,NULL,downloadBinaryThread,NULL);
 	
 	// Let GTK do its thing until downloading is done
-	while(!downloadDone) gtk_main_iteration_do(0);
+	while(downloadDone == 0) gtk_main_iteration_do(0);
 	downloadDone = 0;
-	
-	gtk_widget_hide(GTK_WIDGET(downloadingDialog));
 }
 
-void *flashThread(void *address)
+void *flashThread(void * removeAfter)
 {
 	// Get current working directory
 	char cwd[1024];
@@ -381,20 +382,20 @@ void *flashThread(void *address)
 	
 	// Construct openocd command
 	char command[512];
-	snprintf(command,sizeof(command),"%s%s%s%s%s%s%s%s%s%s%s",
+	snprintf(command,sizeof(command),"%s%s%s%s%s%s%s%i%s%s%s",
 		"openocd/",arch,"/bin/openocd ",
-		"-c 'set filename ",fileToFlash," ' ",
-		"-c 'set address ",address," ' ",
+		"-c 'set filePath ",fileToFlash," ' ",
+		"-c 'set address 0x",address," ' ",
 		"-f scripts/swd-stlink.ocd ",
 		"-f scripts/flash-program.ocd"
 	);
 	printf("%s\n",command);
 	
-	// Run openocd // TODO: Get the output and put it somewhere?
+	// Run openocd
 	system(command);
 	
 	// Clean up leftovers
-	remove(fileToFlash); //TODO: ???
+	if(removeAfter) remove(fileToFlash);
 	strcpy(fileToFlash,"");
 	
 	// Tell the main thread that flashing is done
@@ -404,21 +405,16 @@ void *flashThread(void *address)
 }
 
 // Flash file in location fileToFlash to a given address on the Pinetime
-void flash(char address[])
+void flash(int removeAfter)
 {
-	gtk_widget_show(GTK_WIDGET(flashingDialog));
+	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowFlashing));
 	
-	// Create the flashing thread
 	pthread_t fThread;
-	pthread_create(&fThread,NULL,flashThread,(void *)address);
+	pthread_create(&fThread,NULL,flashThread,(void *)removeAfter);
 	
 	// TODO: Get OpenOCD's output and place it on the screen
 	
 	// Let GTK do its thing until flashing is done
-	while(!flashDone) gtk_main_iteration_do(0);
-	flashDone = 0;
-	
-	// Close the widget
-	gtk_widget_hide(GTK_WIDGET(flashingDialog));
+	while(flashDone == 0) gtk_main_iteration_do(0);
 }
 
