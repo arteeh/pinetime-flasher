@@ -10,6 +10,7 @@ This is a Linux GTK application targeted towards smartphones, containing everyth
 - Sending phone notifications to the watch
 - Receiving heartbeat and step counter data from the watch and visualising it
 - Updating the watch firmware over Bluetooth
+- Customizing the bootloader image
 - Installing and removing apps on the watch (This is a long-term goal)
 
 For developers who own a PineTime devkit and an ST-Link, the app can do the following:
