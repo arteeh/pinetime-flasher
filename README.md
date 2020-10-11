@@ -1,7 +1,6 @@
 # Pinetime Companion
 
-A GTK companion app for the Pinetime, for use on Pinephones and Linux desktops. My goal for this app is to replace
- for:
+A GTK companion app for the Pinetime, for use on Pinephones and Linux desktops.
 
 ## Project goals
 
