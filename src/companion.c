@@ -1,7 +1,10 @@
 #include "companion.h"
 
 GtkBuilder *builder;
+
 GObject *window;
+GObject *btnAbout;
+GObject *windowAbout;
 
 int main(int argc,char *argv[])
 {
@@ -13,9 +16,11 @@ int main(int argc,char *argv[])
 	
 	// Connect window object in the builder to our own window object
 	window = gtk_builder_get_object(builder,"window");
+	btnAbout = gtk_builder_get_object(builder,"btnAbout");
+	windowAbout = gtk_builder_get_object(builder,"windowAbout");
 	
-	// Close app when the close button is pressed
-	g_signal_connect(window,"destroy",G_CALLBACK(gtk_main_quit),NULL);
+	// Connect all the signal handlers in the ui file
+	gtk_builder_connect_signals(builder,NULL);
 	
 	// Set up other pages
 	initUpdates();
@@ -29,3 +34,7 @@ int main(int argc,char *argv[])
 	return 0;
 }
 
+void _btnAbout()
+{
+	gtk_widget_show(GTK_WIDGET(windowAbout));
+}

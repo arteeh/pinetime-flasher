@@ -74,18 +74,6 @@ void initAdvanced()
 	btnConfirmCancel		= gtk_builder_get_object(builder,"btnConfirmCancel");
 	btnConfirmContinue		= gtk_builder_get_object(builder,"btnConfirmContinue");	
 	getFileChooser			= gtk_builder_get_object(builder,"getFileChooser");
-	
-	// Connect button press events to our functions
-	g_signal_connect(btnFlashBootloader,"clicked",G_CALLBACK(_btnFlashBootloader),NULL);
-	g_signal_connect(btnFlashInfinitime,"clicked",G_CALLBACK(_btnFlashInfinitime),NULL);
-	g_signal_connect(btnFlashWeb,"clicked",G_CALLBACK(_btnFlashWeb),NULL);
-	g_signal_connect(btnFlashFile,"clicked",G_CALLBACK(_btnFlashFile),NULL);
-	g_signal_connect(btnGetUrlCancel,"clicked",G_CALLBACK(_btnGetUrlCancel),NULL);
-	g_signal_connect(btnGetUrlContinue,"clicked",G_CALLBACK(_btnGetUrlContinue),NULL);
-	g_signal_connect(btnGetAddressCancel,"clicked",G_CALLBACK(_btnGetAddressCancel),NULL);
-	g_signal_connect(btnGetAddressContinue,"clicked",G_CALLBACK(_btnGetAddressContinue),NULL);
-	g_signal_connect(btnConfirmCancel,"clicked",G_CALLBACK(_btnConfirmCancel),NULL);
-	g_signal_connect(btnConfirmContinue,"clicked",G_CALLBACK(_btnConfirmContinue),NULL);
 }
 
 void clean()
@@ -161,10 +149,14 @@ void _btnFlashInfinitime()
 
 void _btnFlashWeb()
 {
-	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowGetUrl));
+	gtk_stack_set_visible_child(
+		GTK_STACK(advancedWindows),
+		GTK_WIDGET(advancedWindowGetUrl));
 	while(urlSet == 0) gtk_main_iteration_do(0);
 	if(urlSet == -1) return;
-	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowGetAddress));
+	gtk_stack_set_visible_child(
+		GTK_STACK(advancedWindows),
+		GTK_WIDGET(advancedWindowGetAddress));
 	while(addressSet == 0) gtk_main_iteration_do(0);
 	if(addressSet == -1) return;
 	
@@ -196,7 +188,9 @@ void _btnFlashFile()
 		return;
 	}
 	
-	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowGetAddress));
+	gtk_stack_set_visible_child(
+		GTK_STACK(advancedWindows),
+		GTK_WIDGET(advancedWindowGetAddress));
 	while(addressSet == 0) gtk_main_iteration_do(0);
 	if(addressSet == -1)
 	{
@@ -213,7 +207,9 @@ void _btnFlashFile()
 
 void _btnGetUrlCancel()
 {
-	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowMain));
+	gtk_stack_set_visible_child(
+		GTK_STACK(advancedWindows),
+		GTK_WIDGET(advancedWindowMain));
 	urlSet = -1;
 	printf("URL input cancelled\n");
 }
@@ -227,7 +223,9 @@ void _btnGetUrlContinue()
 
 void _btnGetAddressCancel()
 {
-	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowMain));
+	gtk_stack_set_visible_child(
+		GTK_STACK(advancedWindows),
+		GTK_WIDGET(advancedWindowMain));
 	addressSet = -1;
 	printf("Address input cancelled\n");
 }
@@ -244,7 +242,9 @@ void _btnGetAddressContinue()
 
 void _btnConfirmCancel()
 {
-	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowMain));
+	gtk_stack_set_visible_child(
+		GTK_STACK(advancedWindows),
+		GTK_WIDGET(advancedWindowMain));
 	confirmed = -1;
 	printf("Confirmation cancelled\n");
 }
@@ -270,7 +270,9 @@ void flashConfirm(char name[])
 		"?</span>"
 	);
 	gtk_label_set_markup(GTK_LABEL(lblConfirm),message);
-	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowConfirm));
+	gtk_stack_set_visible_child(
+		GTK_STACK(advancedWindows),
+		GTK_WIDGET(advancedWindowConfirm));
 	while(confirmed == 0) gtk_main_iteration_do(0);
 	if(confirmed == 1) printf("Confirmed\n");
 	else if(confirmed == -1) printf("Cancelled\n");
@@ -423,7 +425,9 @@ void *flashThread(void * removeAfter)
 // Flash file in location fileToFlash to a given address on the Pinetime
 void flash(int removeAfter)
 {
-	gtk_stack_set_visible_child(GTK_STACK(advancedWindows),GTK_WIDGET(advancedWindowFlashing));
+	gtk_stack_set_visible_child(
+		GTK_STACK(advancedWindows),
+		GTK_WIDGET(advancedWindowFlashing));
 	
 	pthread_t fThread;
 	pthread_create(&fThread,NULL,flashThread,(void *) (size_t) removeAfter);

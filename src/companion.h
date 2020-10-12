@@ -19,5 +19,10 @@
 
 extern GtkBuilder *builder;
 extern GObject *window;
+extern GObject *btnAbout;
+extern GObject *windowAbout;
+
+int main(int argc,char *argv[]);
+void _btnAbout();
 
 #endif
