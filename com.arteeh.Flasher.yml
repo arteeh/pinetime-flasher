@@ -1,9 +1,9 @@
-app-id: com.arteeh.Companion
+app-id: com.arteeh.Flasher
 # Libhandy apparently depends on vala, so the freedesktop platform is not enough
 runtime: org.gnome.Platform
 runtime-version: '3.38'
 sdk: org.gnome.Sdk
-command: /app/bin/companion
+command: /app/bin/pinetime-flasher
 
 finish-args:
   - --share=network
@@ -27,10 +27,10 @@ modules:
     build-commands:
       - make
       - mkdir /app/bin
-      - cp companion /app/bin/companion
+      - cp pinetime-flasher /app/bin/pinetime-flasher
       - cp -r openocd /app/bin/openocd
       - cp -r scripts /app/bin/scripts
     sources:
       - type: git
-        url: https://gitlab.com/arteeh/pinetime-companion.git
-        #url: file:///home/arteeh/pinetime-companion
+        url: https://gitlab.com/arteeh/pinetime-flasher.git
+        #url: file:///home/arteeh/pinetime-flasher

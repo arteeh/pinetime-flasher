@@ -1,25 +1,15 @@
-# Pinetime Companion
+# Pinetime Flasher
 
-A GTK companion app for the Pinetime, for use on Pinephones and Linux desktops.
+A GTK app for easily flashing the PineTime smartwatch with an ST-Link
+
 
 ## Project goals
 
-This is a Linux GTK application targeted towards smartphones, containing everything you need to interact with your PineTime smartwatch. For users, it will contain the following functionality:
+This is a Linux GTK application made for developers and tinkerers to easily flash the PineTime smartwatch using an ST-Link programmer. If you own a PineTime devkit and an ST-Link, the app can do the following for you:
 
-- Syncing the time and date on the watch
-- Sending phone notifications to the watch
-- Receiving heartbeat and step counter data from the watch and visualising it
-- Updating the watch firmware over Bluetooth
-- Customizing the bootloader image
-- Installing and removing apps on the watch (This is a long-term goal)
-
-For developers who own a PineTime devkit and an ST-Link, the app can do the following:
-
-- Get the latest Enhanced MCUBoot bootloader and flash it to the watch with the click of a button
-- Get the latest InfiniTime firmware and flash it to the watch
-- Flash a binary from a given web URL to the watch
-- Flash a binary stored on your device to the watch
-- (Optional) Automatically get other popular firmware like Wasp OS and RIOT OS and flash it as well
+- Get the latest versions of Enhanced MCUBoot, Infinitime, wasp-bootloader, and RIOT OS and flash it at the click of a button
+- Flash any binary from a given web URL to the watch
+- Flash any binary stored on your device to the watch
 
 ## How to build
 
@@ -33,14 +23,6 @@ Debian:
 `libhandy-1-dev`
 `libcurl4-openssl-dev`
 
-Fedora:
-
-`clang` (or `gcc`, but change the makefile)
-`make`
-`gtk3-devel`
-`libhandy1-devel`
-`libcurl-devel`
-
 Build by running `make` in the project directory. Start the app by running `make run`.
 
 To build a flatpak, run flatpak.sh in the project root. Note: the flatpak builder currently grabs the app from this git repository, so your local changes will not be included in the flatpak you build. Another note: Flashing currently doesn't work in the flatpak because the sandbox doesn't have access to udev. This can be worked around by asking the user to install the udev rule themselves.
@@ -49,17 +31,13 @@ To build a flatpak, run flatpak.sh in the project root. Note: the flatpak builde
 
 Install Glade, and make sure it recognizes libhandy widgets. If Glade was installed as a flatpak, you need org.gnome.Sdk version 3.38 as well.
 
-Open companion.ui in Glade to create and modify the UI, and to connect buttons with event handlers (under 'signals'). Also read [this](glade-sucks.md).
+Open flasher.ui in Glade to create and modify the UI, and to connect buttons with event handlers (under 'signals'). Also read [this](glade-sucks.md).
 
-companion.c is the main file with the main function. It handles all the initialization and starts GTK.
-
-updates.c contains all functionality related to the 'Updates' tab.
-
-advanced.c contains all functionality related to the 'Advanced' tab.
+flasher.c is the main file with the main function. It handles all the initialization and starts GTK.
 
 ## Credits
 
-- [Lup Yuen Lee](https://lupyuen.github.io/) for creating [pinetime-updater](https://github.com/lupyuen/pinetime-updater). The 'Advanced' functionality is practically a fork of this effort.
+- [Lup Yuen Lee](https://lupyuen.github.io/) for creating [pinetime-updater](https://github.com/lupyuen/pinetime-updater). The functionality in my app is practically a fork of this effort.
 
 ## Who am I?
 

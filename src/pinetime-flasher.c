@@ -1,7 +1,29 @@
-#include "advanced.h"
+// LIBRARIES
+
+// time() for debugging
+#include <sys/time.h>
+// strlen()
+#include <string.h>
+// For system(), to run executables
+#include <unistd.h>
+// For basename() in downloadBinary()
+#include <libgen.h>
+// GTK library
+#include <gtk/gtk.h>
+// Libhandy
+#include <handy.h>
+// String to number
+#include <stdlib.h>
+// For uname() in getArch()
+#include <sys/utsname.h>
+// For downloading files from the internet
+#include <curl/curl.h>
+// Multithreading, for running commands AND the UI at the same time
+#include <pthread.h>
+
+// VARIABLES
 
 char arch[6];
-
 char fileToFlash[4096];
 char filePath[4096];
 char url[4096];
@@ -13,6 +35,14 @@ int downloadDone = 0;
 int flashDone = 0;
 int confirmed = 0;
 int udevSet = 0;
+
+// GTK OBJECTS
+
+// Main
+GtkBuilder *builder;
+GObject *window;
+GObject *btnAbout;
+GObject *windowAbout;
 
 // Windows
 GObject *advancedWindows;
@@ -47,8 +77,33 @@ GObject *btnConfirmContinue;
 // Flash native file chooser dialog
 GObject *getFileChooser;
 
+// FUNCTION DECLARATIONS
+
+void init();
+void clean();
+void setArch();
+void _btnAbout();
+void _btnFlashBootloader();
+void _btnFlashInfinitime();
+void _btnFlashWeb();
+void _btnFlashFile();
+void _btnGetUrlCancel();
+void _btnGetUrlContinue();
+void _btnGetAddressCancel();
+void _btnGetAddressContinue();
+void _btnConfirmCancel();
+void _btnConfirmContinue();
+void flashConfirm(char name[]);
+void setUdev();
+void *downloadBinaryThread(void * arg);
+void downloadBinary();
+void *flashThread(void * removeAfter);
+void flash(int removeAfter);
+
+// FUNCTIONS
+
 // Initialize the UI and all event handlers under the Advanced page
-void initAdvanced()
+void init()
 {
 	setArch();
 	
@@ -109,6 +164,11 @@ void setArch()
 	else printf("ERROR: setArch() failed\n");
 	
 	printf("System architecture: %s\n",arch);
+}
+
+void _btnAbout()
+{
+	gtk_widget_show(GTK_WIDGET(windowAbout));
 }
 
 void _btnFlashBootloader()
@@ -436,5 +496,32 @@ void flash(int removeAfter)
 	
 	// Let GTK do its thing until flashing is done
 	while(flashDone == 0) gtk_main_iteration_do(0);
+}
+
+int main(int argc,char *argv[])
+{
+	gtk_init(&argc,&argv);
+	hdy_init();
+	
+	// Construct a GtkBuilder instance and fill it with the main UI
+	builder = gtk_builder_new_from_resource("/com/arteeh/Flasher/pinetime-flasher.ui");
+	
+	// Connect window object in the builder to our own window object
+	window = gtk_builder_get_object(builder,"window");
+	btnAbout = gtk_builder_get_object(builder,"btnAbout");
+	windowAbout = gtk_builder_get_object(builder,"windowAbout");
+	
+	// Attach id's in ui file to GObjects
+	init();
+	
+	// Connect all the signal handlers in the ui file
+	gtk_builder_connect_signals(builder,NULL);
+	
+	// Show the window
+	gtk_widget_show_all(GTK_WIDGET(window));
+	
+	gtk_main();
+	
+	return 0;
 }
 
