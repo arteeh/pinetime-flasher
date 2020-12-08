@@ -2,24 +2,24 @@
 
 // time() for debugging
 #include <sys/time.h>
+// For uname() in getArch()
+#include <sys/utsname.h>
 // strlen()
 #include <string.h>
 // For system(), to run executables
 #include <unistd.h>
 // For basename() in downloadBinary()
 #include <libgen.h>
+// String to number
+#include <stdlib.h>
+// Multithreading, for running commands AND the UI at the same time
+#include <pthread.h>
+// For downloading files from the internet
+#include <curl/curl.h>
 // GTK library
 #include <gtk/gtk.h>
 // Libhandy
 #include <handy.h>
-// String to number
-#include <stdlib.h>
-// For uname() in getArch()
-#include <sys/utsname.h>
-// For downloading files from the internet
-#include <curl/curl.h>
-// Multithreading, for running commands AND the UI at the same time
-#include <pthread.h>
 
 // VARIABLES
 
@@ -102,12 +102,21 @@ void flash(int removeAfter);
 
 // FUNCTIONS
 
-// Initialize the UI and all event handlers under the Advanced page
+// Initialize the UI and all event handlers
 void init()
 {
+	gtk_init(&argc,&argv);
+	hdy_init();
+	
 	setArch();
 	
+	// Construct a GtkBuilder instance and fill it with the main UI
+	builder = gtk_builder_new_from_resource("/com/arteeh/Flasher/pinetime-flasher.ui");
+	
 	// Connect objects in the UI to our GObjects
+	window				= gtk_builder_get_object(builder,"window");
+	btnAbout			= gtk_builder_get_object(builder,"btnAbout");
+	windowAbout			= gtk_builder_get_object(builder,"windowAbout");
 	advancedWindows			= gtk_builder_get_object(builder,"advancedWindows");
 	advancedWindowMain		= gtk_builder_get_object(builder,"advancedWindowMain");
 	advancedWindowGetUrl		= gtk_builder_get_object(builder,"advancedWindowGetUrl");
@@ -129,6 +138,12 @@ void init()
 	btnConfirmCancel		= gtk_builder_get_object(builder,"btnConfirmCancel");
 	btnConfirmContinue		= gtk_builder_get_object(builder,"btnConfirmContinue");	
 	getFileChooser			= gtk_builder_get_object(builder,"getFileChooser");
+	
+	// Connect all the signal handlers in the ui file
+	gtk_builder_connect_signals(builder,NULL);
+	
+	// Show the window
+	gtk_widget_show_all(GTK_WIDGET(window));
 }
 
 void clean()
@@ -500,25 +515,7 @@ void flash(int removeAfter)
 
 int main(int argc,char *argv[])
 {
-	gtk_init(&argc,&argv);
-	hdy_init();
-	
-	// Construct a GtkBuilder instance and fill it with the main UI
-	builder = gtk_builder_new_from_resource("/com/arteeh/Flasher/pinetime-flasher.ui");
-	
-	// Connect window object in the builder to our own window object
-	window = gtk_builder_get_object(builder,"window");
-	btnAbout = gtk_builder_get_object(builder,"btnAbout");
-	windowAbout = gtk_builder_get_object(builder,"windowAbout");
-	
-	// Attach id's in ui file to GObjects
 	init();
-	
-	// Connect all the signal handlers in the ui file
-	gtk_builder_connect_signals(builder,NULL);
-	
-	// Show the window
-	gtk_widget_show_all(GTK_WIDGET(window));
 	
 	gtk_main();
 	
