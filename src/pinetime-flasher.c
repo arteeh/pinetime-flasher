@@ -104,10 +104,7 @@ void flash(int removeAfter);
 
 // Initialize the UI and all event handlers
 void init()
-{
-	gtk_init(&argc,&argv);
-	hdy_init();
-	
+{	
 	setArch();
 	
 	// Construct a GtkBuilder instance and fill it with the main UI
@@ -515,6 +512,8 @@ void flash(int removeAfter)
 
 int main(int argc,char *argv[])
 {
+	gtk_init(&argc,&argv);
+	hdy_init();
 	init();
 	
 	gtk_main();
