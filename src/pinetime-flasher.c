@@ -169,12 +169,6 @@ void setArch()
 	strcpy(arch,systemData->machine);
 	free(systemData);
 	
-	// TODO: Test on arm64 and arm32 architectures
-	if(strcmp(arch,"x86_64") == 0) strcpy(arch,"amd64");
-	else if(strcmp(arch,"arm64") == 0) strcpy(arch,"arm64");
-	else if(strcmp(arch,"arm32") == 0) strcpy(arch,"arm32");
-	else printf("ERROR: setArch() failed\n");
-	
 	printf("System architecture: %s\n",arch);
 }
 
