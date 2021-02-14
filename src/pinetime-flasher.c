@@ -176,7 +176,7 @@ bool _closeAbout()
 void _btnFlashBootloader()
 {
 	// FIXME: This is not guaranteed to be the latest version
-	strcpy(url,"https://github.com/lupyuen/pinetime-rust-mynewt/releases/download/v5.0.4/mynewt.elf.bin");
+	strcpy(url,"https://github.com/JF002/Pinetime/releases/download/0.13.0/bootloader.bin");
 	urlSet = true;
 	strcpy(address,"0x0000");
 	addressSet = CONTINUE;
@@ -194,7 +194,8 @@ void _btnFlashBootloader()
 void _btnFlashInfinitime()
 {
 	// FIXME: This is not guaranteed to be the latest version
-	strcpy(url,"https://github.com/JF002/Pinetime/releases/download/0.8.2/image-0.8.2.bin");
+	strcpy(url,"https://github.com/JF002/Pinetime/releases/download/0.13.0/image-0.13.0.bin");
+	
 	urlSet = true;
 	strcpy(address,"0x8000");
 	addressSet = CONTINUE;
