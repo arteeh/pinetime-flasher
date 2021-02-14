@@ -15,13 +15,14 @@ This is a Linux GTK application made for developers and tinkerers to easily flas
 
 To build, you need to have the following packages installed: 
 
-Debian:
+Arch:
 
-`clang` (or `gcc`, but change the makefile)
+`gcc`
 `make`
-`libgtk-3-dev`
-`libhandy-1-dev`
-`libcurl4-openssl-dev`
+`pkgconf`
+`gtk4`
+`libhandy`
+`libcurl-compat`
 
 Build by running `make` in the project directory. Start the app by running `make run`.
 

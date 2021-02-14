@@ -1,7 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.38.2 
+
+The MIT License (MIT)
+
+Copyright (c) 
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+Author: Maarten de Jong
+
+-->
 <interface>
-  <requires lib="gtk+" version="3.22"/>
+  <requires lib="gtk+" version="3.24"/>
   <requires lib="libhandy" version="1.0"/>
+  <!-- interface-license-type mit -->
+  <!-- interface-name Pinetime Flasher -->
+  <!-- interface-description A simple app for flashing the Pinetime smartwatch with an ST-Link -->
+  <!-- interface-authors Maarten de Jong -->
   <object class="GtkPopover" id="hamburgerPopover">
     <property name="can-focus">False</property>
     <child>
@@ -18,7 +49,7 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
-            <property name="text" translatable="yes">About PineTime Flasher</property>
+            <property name="text" translatable="yes">About Pinetime Flasher</property>
             <property name="centered">True</property>
             <signal name="clicked" handler="_btnAbout" swapped="no"/>
           </object>
@@ -36,6 +67,7 @@
     <property name="window-position">center</property>
     <property name="default-width">400</property>
     <property name="default-height">400</property>
+    <property name="icon">../build/icon.png</property>
     <signal name="destroy" handler="gtk_main_quit" swapped="no"/>
     <child>
       <object class="GtkBox">
@@ -46,7 +78,7 @@
           <object class="HdyHeaderBar">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="title" translatable="yes">PineTime Flasher</property>
+            <property name="title" translatable="yes">Pinetime Flasher</property>
             <property name="has-subtitle">False</property>
             <property name="show-close-button">True</property>
             <property name="centering-policy">strict</property>
@@ -74,13 +106,13 @@
           </packing>
         </child>
         <child>
-          <object class="GtkStack" id="advancedWindows">
+          <object class="GtkStack" id="windows">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="transition-type">slide-left-right</property>
             <child>
               <!-- n-columns=1 n-rows=1 -->
-              <object class="GtkGrid" id="advancedWindowMain">
+              <object class="GtkGrid" id="windowMain">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">center</property>
@@ -188,8 +220,8 @@
               </packing>
             </child>
             <child>
-              <!-- n-columns=3 n-rows=3 -->
-              <object class="GtkGrid" id="advancedWindowGetUrl">
+              <!-- n-columns=1 n-rows=1 -->
+              <object class="GtkGrid" id="windowGetUrl">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <child>
@@ -291,30 +323,6 @@
                     <property name="top-attach">0</property>
                   </packing>
                 </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
               </object>
               <packing>
                 <property name="name">page5</property>
@@ -323,8 +331,8 @@
               </packing>
             </child>
             <child>
-              <!-- n-columns=3 n-rows=3 -->
-              <object class="GtkGrid" id="advancedWindowGetAddress">
+              <!-- n-columns=1 n-rows=1 -->
+              <object class="GtkGrid" id="windowGetAddress">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <child>
@@ -451,30 +459,6 @@
                     <property name="top-attach">0</property>
                   </packing>
                 </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
               </object>
               <packing>
                 <property name="name">page4</property>
@@ -483,8 +467,8 @@
               </packing>
             </child>
             <child>
-              <!-- n-columns=3 n-rows=3 -->
-              <object class="GtkGrid" id="advancedWindowConfirm">
+              <!-- n-columns=1 n-rows=1 -->
+              <object class="GtkGrid" id="windowConfirm">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="row-homogeneous">True</property>
@@ -522,7 +506,7 @@
                         <property name="margin-right">10</property>
                         <property name="margin-start">10</property>
                         <property name="margin-end">10</property>
-                        <property name="label" translatable="yes">Your PineTime needs to be connected to this device with an ST-Link programmer.</property>
+                        <property name="label" translatable="yes">Your Pinetime needs to be connected to this device with an ST-Link programmer.</property>
                         <property name="use-markup">True</property>
                         <property name="wrap">True</property>
                       </object>
@@ -579,30 +563,6 @@
                     <property name="top-attach">0</property>
                   </packing>
                 </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
               </object>
               <packing>
                 <property name="name">page3</property>
@@ -611,8 +571,8 @@
               </packing>
             </child>
             <child>
-              <!-- n-columns=3 n-rows=3 -->
-              <object class="GtkGrid" id="advancedWindowDownloading">
+              <!-- n-columns=1 n-rows=2 -->
+              <object class="GtkGrid" id="windowDownloading">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="row-homogeneous">True</property>
@@ -641,27 +601,6 @@
                     <property name="top-attach">1</property>
                   </packing>
                 </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
               </object>
               <packing>
                 <property name="name">page1</property>
@@ -670,8 +609,8 @@
               </packing>
             </child>
             <child>
-              <!-- n-columns=3 n-rows=3 -->
-              <object class="GtkGrid" id="advancedWindowFlashing">
+              <!-- n-columns=1 n-rows=2 -->
+              <object class="GtkGrid" id="windowFlashing">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="row-homogeneous">True</property>
@@ -699,27 +638,6 @@
                     <property name="left-attach">0</property>
                     <property name="top-attach">1</property>
                   </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
               </object>
               <packing>
@@ -749,16 +667,18 @@
   <object class="GtkAboutDialog" id="windowAbout">
     <property name="can-focus">False</property>
     <property name="modal">True</property>
+    <property name="icon">../build/icon.png</property>
     <property name="type-hint">dialog</property>
     <property name="transient-for">window</property>
-    <property name="program-name">PineTime Flasher</property>
+    <property name="program-name">Pinetime Flasher</property>
     <property name="version">Development build</property>
     <property name="comments" translatable="yes">A simple tool for flashing the Pinetime smartwatch.</property>
     <property name="website">https://gitlab.com/arteeh/pinetime-flasher</property>
     <property name="website-label" translatable="yes">Project page</property>
     <property name="authors">Maarten de Jong</property>
-    <property name="icon-name">com.arteeh.Flasher</property>
+    <property name="logo">../build/icon.png</property>
     <property name="license-type">mit-x11</property>
+    <signal name="delete-event" handler="_closeAbout" swapped="no"/>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can-focus">False</property>
@@ -768,21 +688,12 @@
           <object class="GtkButtonBox">
             <property name="can-focus">False</property>
             <property name="layout-style">end</property>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
             <property name="position">0</property>
           </packing>
-        </child>
-        <child>
-          <placeholder/>
         </child>
       </object>
     </child>
