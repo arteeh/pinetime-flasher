@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Pinetime Flasher
+Keywords=flash;flasher;companion;watch;smartwatch;pinetime;pine;pine64
+Exec=/app/bin/pinetime-flasher
+Terminal=false
+Type=Application
+Icon=com.arteeh.Flasher
+StartupNotify=true

@@ -1,59 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 
-
-This is free and unencumbered software released into the public domain.
-
-Anyone is free to copy, modify, publish, use, compile, sell, or
-distribute this software, either in source code form or as a compiled
-binary, for any purpose, commercial or non-commercial, and by any
-means.
-
-In jurisdictions that recognize copyright laws, the author or authors
-of this software dedicate any and all copyright interest in the
-software to the public domain. We make this dedication for the benefit
-of the public at large and to the detriment of our heirs and
-successors. We intend this dedication to be an overt act of
-relinquishment in perpetuity of all present and future rights to this
-software under copyright law.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
-
-For more information, please refer to <http://unlicense.org/>
-
--->
 <interface>
   <requires lib="gtk+" version="3.22"/>
   <requires lib="libhandy" version="1.0"/>
-  <object class="GtkFileChooserNative" id="getFileChooser">
-    <property name="create_folders">False</property>
-    <property name="title">Pick a binary to flash</property>
-    <property name="modal">True</property>
-    <property name="transient_for">window</property>
-    <property name="accept_label">Select</property>
-    <property name="cancel_label">Cancel</property>
-  </object>
   <object class="GtkPopover" id="hamburgerPopover">
-    <property name="can_focus">False</property>
+    <property name="can-focus">False</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin_start">5</property>
-        <property name="margin_end">5</property>
-        <property name="margin_top">5</property>
-        <property name="margin_bottom">5</property>
+        <property name="can-focus">False</property>
+        <property name="margin-start">5</property>
+        <property name="margin-end">5</property>
+        <property name="margin-top">5</property>
+        <property name="margin-bottom">5</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkModelButton" id="btnAbout">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
             <property name="text" translatable="yes">About PineTime Flasher</property>
             <property name="centered">True</property>
             <signal name="clicked" handler="_btnAbout" swapped="no"/>
@@ -68,28 +32,30 @@ For more information, please refer to <http://unlicense.org/>
     </child>
   </object>
   <object class="HdyApplicationWindow" id="window">
-    <property name="can_focus">False</property>
-    <property name="window_position">center</property>
+    <property name="can-focus">False</property>
+    <property name="window-position">center</property>
+    <property name="default-width">400</property>
+    <property name="default-height">400</property>
     <signal name="destroy" handler="gtk_main_quit" swapped="no"/>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="HdyHeaderBar">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can-focus">False</property>
             <property name="title" translatable="yes">PineTime Flasher</property>
-            <property name="has_subtitle">False</property>
-            <property name="show_close_button">True</property>
-            <property name="centering_policy">strict</property>
+            <property name="has-subtitle">False</property>
+            <property name="show-close-button">True</property>
+            <property name="centering-policy">strict</property>
             <child>
               <object class="GtkMenuButton" id="hamburgerButton">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="focus_on_click">False</property>
-                <property name="receives_default">True</property>
+                <property name="can-focus">True</property>
+                <property name="focus-on-click">False</property>
+                <property name="receives-default">True</property>
                 <property name="direction">none</property>
                 <property name="popover">hamburgerPopover</property>
                 <child>
@@ -97,7 +63,7 @@ For more information, please refer to <http://unlicense.org/>
                 </child>
               </object>
               <packing>
-                <property name="pack_type">end</property>
+                <property name="pack-type">end</property>
               </packing>
             </child>
           </object>
@@ -110,28 +76,29 @@ For more information, please refer to <http://unlicense.org/>
         <child>
           <object class="GtkStack" id="advancedWindows">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="transition_type">slide-left-right</property>
+            <property name="can-focus">False</property>
+            <property name="transition-type">slide-left-right</property>
             <child>
+              <!-- n-columns=1 n-rows=1 -->
               <object class="GtkGrid" id="advancedWindowMain">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <child>
                   <object class="GtkButtonBox">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
                     <property name="valign">center</property>
                     <property name="orientation">vertical</property>
                     <property name="spacing">5</property>
-                    <property name="layout_style">start</property>
+                    <property name="layout-style">start</property>
                     <child>
                       <object class="GtkButton" id="btnFlashBootloader">
                         <property name="label" translatable="yes">Enhanced MCUBoot</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
                         <signal name="clicked" handler="_btnFlashBootloader" swapped="no"/>
                       </object>
                       <packing>
@@ -144,8 +111,8 @@ For more information, please refer to <http://unlicense.org/>
                       <object class="GtkButton" id="btnFlashInfinitime">
                         <property name="label" translatable="yes">InfiniTime</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
                         <signal name="clicked" handler="_btnFlashInfinitime" swapped="no"/>
                       </object>
                       <packing>
@@ -158,8 +125,8 @@ For more information, please refer to <http://unlicense.org/>
                       <object class="GtkButton" id="btnFlashWasp">
                         <property name="label" translatable="yes">wasp-bootloader</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -171,8 +138,8 @@ For more information, please refer to <http://unlicense.org/>
                       <object class="GtkButton" id="btnFlashRiot">
                         <property name="label" translatable="yes">RIOT OS</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -184,8 +151,8 @@ For more information, please refer to <http://unlicense.org/>
                       <object class="GtkButton" id="btnFlashWeb">
                         <property name="label" translatable="yes">Flash firmware from URL</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
                         <signal name="clicked" handler="_btnFlashWeb" swapped="no"/>
                       </object>
                       <packing>
@@ -198,8 +165,8 @@ For more information, please refer to <http://unlicense.org/>
                       <object class="GtkButton" id="btnFlashFile">
                         <property name="label" translatable="yes">Flash firmware from file</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
                         <signal name="clicked" handler="_btnFlashFile" swapped="no"/>
                       </object>
                       <packing>
@@ -210,8 +177,8 @@ For more information, please refer to <http://unlicense.org/>
                     </child>
                   </object>
                   <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">0</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
               </object>
@@ -221,13 +188,14 @@ For more information, please refer to <http://unlicense.org/>
               </packing>
             </child>
             <child>
+              <!-- n-columns=3 n-rows=3 -->
               <object class="GtkGrid" id="advancedWindowGetUrl">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <child>
                   <object class="GtkBox">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
                     <property name="hexpand">True</property>
@@ -237,9 +205,9 @@ For more information, please refer to <http://unlicense.org/>
                     <child>
                       <object class="GtkLabel">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can-focus">False</property>
                         <property name="label" translatable="yes">&lt;span size="large" font_weight="bold"&gt;Enter a URL to download from&lt;/span&gt;</property>
-                        <property name="use_markup">True</property>
+                        <property name="use-markup">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -250,11 +218,11 @@ For more information, please refer to <http://unlicense.org/>
                     <child>
                       <object class="GtkEntry" id="inpGetUrl">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="activates_default">True</property>
-                        <property name="caps_lock_warning">False</property>
-                        <property name="placeholder_text" translatable="yes">http://www.example.com</property>
-                        <property name="input_purpose">url</property>
+                        <property name="can-focus">True</property>
+                        <property name="activates-default">True</property>
+                        <property name="caps-lock-warning">False</property>
+                        <property name="placeholder-text" translatable="yes">http://www.example.com</property>
+                        <property name="input-purpose">url</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -265,9 +233,9 @@ For more information, please refer to <http://unlicense.org/>
                     <child>
                       <object class="GtkLabel">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can-focus">False</property>
                         <property name="label" translatable="yes">The URL should be a direct download link, not just a website.</property>
-                        <property name="use_markup">True</property>
+                        <property name="use-markup">True</property>
                         <property name="wrap">True</property>
                       </object>
                       <packing>
@@ -279,15 +247,15 @@ For more information, please refer to <http://unlicense.org/>
                     <child>
                       <object class="GtkButtonBox">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can-focus">False</property>
                         <property name="spacing">5</property>
-                        <property name="layout_style">center</property>
+                        <property name="layout-style">center</property>
                         <child>
                           <object class="GtkButton" id="btnGetUrlCancel">
                             <property name="label" translatable="yes">Cancel</property>
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
                             <signal name="clicked" handler="_btnGetUrlCancel" swapped="no"/>
                           </object>
                           <packing>
@@ -300,8 +268,8 @@ For more information, please refer to <http://unlicense.org/>
                           <object class="GtkButton" id="btnGetUrlContinue">
                             <property name="label" translatable="yes">Continue</property>
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
                             <signal name="clicked" handler="_btnGetUrlContinue" swapped="no"/>
                           </object>
                           <packing>
@@ -319,9 +287,33 @@ For more information, please refer to <http://unlicense.org/>
                     </child>
                   </object>
                   <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">0</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
                   </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
@@ -331,13 +323,14 @@ For more information, please refer to <http://unlicense.org/>
               </packing>
             </child>
             <child>
+              <!-- n-columns=3 n-rows=3 -->
               <object class="GtkGrid" id="advancedWindowGetAddress">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <child>
                   <object class="GtkBox">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
                     <property name="hexpand">True</property>
@@ -347,9 +340,9 @@ For more information, please refer to <http://unlicense.org/>
                     <child>
                       <object class="GtkLabel">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can-focus">False</property>
                         <property name="label" translatable="yes">&lt;span size="large" font_weight="bold"&gt;Enter an address to flash to&lt;/span&gt;</property>
-                        <property name="use_markup">True</property>
+                        <property name="use-markup">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -360,12 +353,12 @@ For more information, please refer to <http://unlicense.org/>
                     <child>
                       <object class="GtkBox">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can-focus">False</property>
                         <property name="halign">center</property>
                         <child>
                           <object class="GtkLabel">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="can-focus">False</property>
                             <property name="label" translatable="yes">0x </property>
                           </object>
                           <packing>
@@ -377,12 +370,12 @@ For more information, please refer to <http://unlicense.org/>
                         <child>
                           <object class="GtkEntry" id="inpGetAddress">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="max_length">4</property>
-                            <property name="activates_default">True</property>
-                            <property name="caps_lock_warning">False</property>
-                            <property name="placeholder_text" translatable="yes">8000</property>
-                            <property name="input_purpose">digits</property>
+                            <property name="can-focus">True</property>
+                            <property name="max-length">4</property>
+                            <property name="activates-default">True</property>
+                            <property name="caps-lock-warning">False</property>
+                            <property name="placeholder-text" translatable="yes">8000</property>
+                            <property name="input-purpose">digits</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -400,9 +393,9 @@ For more information, please refer to <http://unlicense.org/>
                     <child>
                       <object class="GtkLabel">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can-focus">False</property>
                         <property name="label" translatable="yes">Firmware should usually be flashed to &lt;span font_weight="bold"&gt;0x8000&lt;/span&gt;. Bootloaders are flashed to &lt;span font_weight="bold"&gt;0x0000&lt;/span&gt;.</property>
-                        <property name="use_markup">True</property>
+                        <property name="use-markup">True</property>
                         <property name="wrap">True</property>
                       </object>
                       <packing>
@@ -414,15 +407,15 @@ For more information, please refer to <http://unlicense.org/>
                     <child>
                       <object class="GtkButtonBox">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can-focus">False</property>
                         <property name="spacing">5</property>
-                        <property name="layout_style">center</property>
+                        <property name="layout-style">center</property>
                         <child>
                           <object class="GtkButton" id="btnGetAddressCancel">
                             <property name="label" translatable="yes">Cancel</property>
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
                             <signal name="clicked" handler="_btnGetAddressCancel" swapped="no"/>
                           </object>
                           <packing>
@@ -435,8 +428,8 @@ For more information, please refer to <http://unlicense.org/>
                           <object class="GtkButton" id="btnGetAddressContinue">
                             <property name="label" translatable="yes">Continue</property>
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
                             <signal name="clicked" handler="_btnGetAddressContinue" swapped="no"/>
                           </object>
                           <packing>
@@ -454,9 +447,33 @@ For more information, please refer to <http://unlicense.org/>
                     </child>
                   </object>
                   <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">0</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
                   </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
@@ -466,14 +483,15 @@ For more information, please refer to <http://unlicense.org/>
               </packing>
             </child>
             <child>
+              <!-- n-columns=3 n-rows=3 -->
               <object class="GtkGrid" id="advancedWindowConfirm">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="row_homogeneous">True</property>
+                <property name="can-focus">False</property>
+                <property name="row-homogeneous">True</property>
                 <child>
                   <object class="GtkBox">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
                     <property name="orientation">vertical</property>
@@ -481,13 +499,13 @@ For more information, please refer to <http://unlicense.org/>
                     <child>
                       <object class="GtkLabel" id="lblConfirm">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="margin_left">10</property>
-                        <property name="margin_right">10</property>
-                        <property name="margin_start">10</property>
-                        <property name="margin_end">10</property>
+                        <property name="can-focus">False</property>
+                        <property name="margin-left">10</property>
+                        <property name="margin-right">10</property>
+                        <property name="margin-start">10</property>
+                        <property name="margin-end">10</property>
                         <property name="label" translatable="yes">&lt;span size="large" font_weight="bold"&gt;This text should be changed at runtime&lt;/span&gt;</property>
-                        <property name="use_markup">True</property>
+                        <property name="use-markup">True</property>
                         <property name="wrap">True</property>
                       </object>
                       <packing>
@@ -499,13 +517,13 @@ For more information, please refer to <http://unlicense.org/>
                     <child>
                       <object class="GtkLabel">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="margin_left">10</property>
-                        <property name="margin_right">10</property>
-                        <property name="margin_start">10</property>
-                        <property name="margin_end">10</property>
+                        <property name="can-focus">False</property>
+                        <property name="margin-left">10</property>
+                        <property name="margin-right">10</property>
+                        <property name="margin-start">10</property>
+                        <property name="margin-end">10</property>
                         <property name="label" translatable="yes">Your PineTime needs to be connected to this device with an ST-Link programmer.</property>
-                        <property name="use_markup">True</property>
+                        <property name="use-markup">True</property>
                         <property name="wrap">True</property>
                       </object>
                       <packing>
@@ -517,15 +535,15 @@ For more information, please refer to <http://unlicense.org/>
                     <child>
                       <object class="GtkButtonBox">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can-focus">False</property>
                         <property name="spacing">5</property>
-                        <property name="layout_style">center</property>
+                        <property name="layout-style">center</property>
                         <child>
                           <object class="GtkButton" id="btnConfirmCancel">
                             <property name="label" translatable="yes">Cancel</property>
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
                             <signal name="clicked" handler="_btnConfirmCancel" swapped="no"/>
                           </object>
                           <packing>
@@ -538,8 +556,8 @@ For more information, please refer to <http://unlicense.org/>
                           <object class="GtkButton" id="btnConfirmContinue">
                             <property name="label" translatable="yes">Continue</property>
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
                             <signal name="clicked" handler="_btnConfirmContinue" swapped="no"/>
                           </object>
                           <packing>
@@ -557,9 +575,33 @@ For more information, please refer to <http://unlicense.org/>
                     </child>
                   </object>
                   <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">0</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
                   </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
@@ -569,34 +611,56 @@ For more information, please refer to <http://unlicense.org/>
               </packing>
             </child>
             <child>
+              <!-- n-columns=3 n-rows=3 -->
               <object class="GtkGrid" id="advancedWindowDownloading">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="row_homogeneous">True</property>
+                <property name="can-focus">False</property>
+                <property name="row-homogeneous">True</property>
                 <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
                     <property name="label" translatable="yes">&lt;span size="large" font_weight="bold"&gt;Downloading...&lt;/span&gt;</property>
-                    <property name="use_markup">True</property>
+                    <property name="use-markup">True</property>
                   </object>
                   <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">0</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkSpinner">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
                     <property name="active">True</property>
                   </object>
                   <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">1</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">1</property>
                   </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
@@ -606,34 +670,56 @@ For more information, please refer to <http://unlicense.org/>
               </packing>
             </child>
             <child>
+              <!-- n-columns=3 n-rows=3 -->
               <object class="GtkGrid" id="advancedWindowFlashing">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="row_homogeneous">True</property>
+                <property name="can-focus">False</property>
+                <property name="row-homogeneous">True</property>
                 <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
                     <property name="label" translatable="yes">&lt;span size="large" font_weight="bold"&gt;Flashing...&lt;/span&gt;</property>
-                    <property name="use_markup">True</property>
+                    <property name="use-markup">True</property>
                   </object>
                   <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">0</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkSpinner">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can-focus">False</property>
                     <property name="active">True</property>
                   </object>
                   <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">1</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">1</property>
                   </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
@@ -652,55 +738,36 @@ For more information, please refer to <http://unlicense.org/>
       </object>
     </child>
   </object>
-  <object class="GtkAboutDialog" id="windowAbout">
-    <property name="can_focus">False</property>
+  <object class="GtkFileChooserNative" id="getFileChooser">
+    <property name="create-folders">False</property>
+    <property name="title">Pick a binary to flash</property>
     <property name="modal">True</property>
-    <property name="type_hint">dialog</property>
-    <property name="transient_for">window</property>
-    <property name="program_name">PineTime Flasher</property>
+    <property name="transient-for">window</property>
+    <property name="accept-label">Select</property>
+    <property name="cancel-label">Cancel</property>
+  </object>
+  <object class="GtkAboutDialog" id="windowAbout">
+    <property name="can-focus">False</property>
+    <property name="modal">True</property>
+    <property name="type-hint">dialog</property>
+    <property name="transient-for">window</property>
+    <property name="program-name">PineTime Flasher</property>
     <property name="version">Development build</property>
-    <property name="comments" translatable="yes">A simple tool for flashing the PineTime smartwatch.</property>
+    <property name="comments" translatable="yes">A simple tool for flashing the Pinetime smartwatch.</property>
     <property name="website">https://gitlab.com/arteeh/pinetime-flasher</property>
-    <property name="license" translatable="yes">This is free and unencumbered software released into the public domain.
-
-Anyone is free to copy, modify, publish, use, compile, sell, or
-distribute this software, either in source code form or as a compiled
-binary, for any purpose, commercial or non-commercial, and by any
-means.
-
-In jurisdictions that recognize copyright laws, the author or authors
-of this software dedicate any and all copyright interest in the
-software to the public domain. We make this dedication for the benefit
-of the public at large and to the detriment of our heirs and
-successors. We intend this dedication to be an overt act of
-relinquishment in perpetuity of all present and future rights to this
-software under copyright law.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
-
-For more information, please refer to &lt;https://unlicense.org&gt;
-</property>
+    <property name="website-label" translatable="yes">Project page</property>
     <property name="authors">Maarten de Jong</property>
-    <property name="logo_icon_name">image-missing</property>
-    <property name="license_type">custom</property>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
+    <property name="icon-name">com.arteeh.Flasher</property>
+    <property name="license-type">mit-x11</property>
     <child internal-child="vbox">
       <object class="GtkBox">
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
           <object class="GtkButtonBox">
-            <property name="can_focus">False</property>
-            <property name="layout_style">end</property>
+            <property name="can-focus">False</property>
+            <property name="layout-style">end</property>
             <child>
               <placeholder/>
             </child>
