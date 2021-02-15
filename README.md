@@ -6,7 +6,7 @@ A GTK app for easily flashing the Pinetime smartwatch with an ST-Link
 
 This is a Linux GTK application made for developers and tinkerers to easily flash the Pinetime smartwatch using an ST-Link V2 programmer. If you own a Pinetime devkit and an ST-Link, the app can do the following for you:
 
-- Get the latest versions of Enhanced MCUBoot, Infinitime, wasp-bootloader, and RIOT OS and flash it at the click of a button
+- Get the latest versions of Enhanced MCUBoot, Infinitime and RIOT OS and flash it at the click of a button
 - Flash any binary from a given web URL to the watch
 - Flash any binary stored on your device to the watch
 
