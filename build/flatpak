@@ -33,13 +33,13 @@ _full () {
 }
 
 _help () {
-	echo "Wasp Companion build script for Flatpak"
+	echo "Pinetime Flasher build script for Flatpak"
 	echo ""
 	echo "-q --quick           Run the build command"
 	echo "-c --clear           Remove the built app and generated files"
 	echo "-r --requirements    Install the build requirements"
 	echo "-p --play            Run the built app"
-	echo "-f --full            Do everything except running the app"
+	echo "-f --full            Do all of the above except running the app"
 }
 
 _main () {
