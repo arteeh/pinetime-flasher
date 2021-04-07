@@ -1,27 +1,36 @@
 app-id: com.arteeh.Flasher
-# Libhandy apparently depends on vala, so the freedesktop platform is not enough
+# Libhandy depends on Vala, so the freedesktop platform is not enough
 runtime: org.gnome.Platform
 runtime-version: '3.38'
 sdk: org.gnome.Sdk
 command: /app/bin/pinetime-flasher
+
 finish-args:
+  # Display: X11
   - --share=ipc
   - --socket=fallback-x11
+  # Display: Wayland
   - --socket=wayland
+  # Download binaries from the internet
   - --share=network
+  # Access to ST-Link usb device
   - --device=all
+
 modules:
+  # OpenOCD with ST-Link requires libusb to be installed
   - name: libusb
     buildsystem: autotools
     sources:
       - type: git
         url: https://github.com/libusb/libusb.git
+  # Flashing software this app uses
   - name: openocd
     config-opts:
       - --enable-stlink
     sources:
       - type: git
         url: https://git.code.sf.net/p/openocd/code
+  # GTK widgets for mobile
   - name: libhandy
     buildsystem: meson
     builddir: true
@@ -31,6 +40,7 @@ modules:
     sources:
       - type: git
         url: https://gitlab.gnome.org/GNOME/libhandy.git
+  # My app
   - name: flasher
     buildsystem: simple
     subdir: build
@@ -44,7 +54,7 @@ modules:
       - install -D com.arteeh.Flasher.desktop /app/share/applications/com.arteeh.Flasher.desktop
       - install -D com.arteeh.Flasher.metainfo.xml /app/share/metainfo/com.arteeh.Flasher.metainfo.xml
     sources:
-      #- type: git
-      #  url: https://gitlab.com/arteeh/pinetime-flasher.git
-      - type: dir
-        path: /home/arteeh/git/pinetime-flasher
+      - type: git
+        url: https://gitlab.com/arteeh/pinetime-flasher.git
+      #- type: dir
+      #  path: /home/arteeh/git/pinetime-flasher
