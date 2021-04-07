@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2021 Maarten de Jong -->
 <component type="desktop-application">
+
 	<id>com.arteeh.Flasher</id>
-	<launchable type="desktop-id">com.arteeh.Flasher.desktop</launchable>
-	<release>0.1</release>
-	<content_rating type="oars-1.1" />
 	<metadata_license>CC0-1.0</metadata_license>
 	<project_license>MIT</project_license>
-	<url type="homepage">https://gitlab.com/arteeh/pinetime-flasher</url>
-	<update_contact>https://arteeh.com</update_contact>
-	<developer_name>Maarten de Jong</developer_name>
 	<name>Pinetime Flasher</name>
 	<summary>A simple app for flashing the PineTime smartwatch with an ST-Link</summary>
+	<developer_name>Maarten de Jong</developer_name>
+	<update_contact>https://arteeh.com</update_contact>
+	
+	<launchable type="desktop-id">com.arteeh.Flasher.desktop</launchable>
+	<content_rating type="oars-1.1" />
+	<url type="homepage">https://gitlab.com/arteeh/pinetime-flasher</url>
+	
 	<description>
 		<p>This is a Linux GTK application made for developers and tinkerers to easily flash the PineTime smartwatch using an ST-Link programmer. If you own a PineTime devkit and an ST-Link, the app can do the following for you:</p>
 		<ul>
@@ -20,6 +22,7 @@
 			<li>Flash any binary stored on your device to the watch</li>
 		</ul>
 	</description>
+	
 	<screenshots>
 		<screenshot type="default">
 			<image>https://gitlab.com/arteeh/pinetime-flasher/-/raw/master/data/screenshot1.png</image>
@@ -28,4 +31,17 @@
 			<image>https://gitlab.com/arteeh/pinetime-flasher/-/raw/master/data/screenshot2.png</image>
 		</screenshot>
 	</screenshots>
+	
+	<releases>
+	
+		<release version="0.1" date="2021-04-07">
+			<description>
+				<p>
+					Initial release
+				</p>
+			</description>
+		</release>
+		
+	</releases>
+	
 </component>
