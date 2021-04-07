@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2021 Maarten de Jong -->
 <component type="desktop-application">
 	<id>com.arteeh.Flasher</id>
+	<launchable type="desktop-id">com.arteeh.Flasher.desktop</launchable>
+	<release>0.1</release>
+	<content_rating type="oars-1.1" />
 	<metadata_license>CC0-1.0</metadata_license>
-	<project_license>MIT License</project_license>
+	<project_license>MIT</project_license>
+	<url type="homepage">https://gitlab.com/arteeh/pinetime-flasher</url>
+	<update_contact>https://arteeh.com</update_contact>
 	<developer_name>Maarten de Jong</developer_name>
 	<name>Pinetime Flasher</name>
 	<summary>A simple app for flashing the PineTime smartwatch with an ST-Link</summary>
@@ -14,15 +20,12 @@
 			<li>Flash any binary stored on your device to the watch</li>
 		</ul>
 	</description>
-	<launchable type="desktop-id">com.arteeh.Flasher.desktop</launchable>
 	<screenshots>
 		<screenshot type="default">
-			<image>http://comical.sourceforge.net/images/comical-0.5-linux.jpg</image>
+			<image>https://gitlab.com/arteeh/pinetime-flasher/-/raw/master/data/screenshot1.png</image>
 		</screenshot>
 		<screenshot>
-			<image>http://comical.sourceforge.net/images/comical-0.6-win32.jpg</image>
+			<image>https://gitlab.com/arteeh/pinetime-flasher/-/raw/master/data/screenshot2.png</image>
 		</screenshot>
 	</screenshots>
-	<url type="homepage">https://gitlab.com/arteeh/pinetime-flasher</url>
-	<update_contact>https://arteeh.com</update_contact>
 </component>
