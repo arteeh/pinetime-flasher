@@ -2,6 +2,6 @@
 <gresources>
   <gresource prefix="/com/arteeh/Flasher">
     <file preprocess="xml-stripblanks">pinetime-flasher.ui</file>
-    <file>../build/icon.png</file>
+    <file>../app/icon.svg</file>
   </gresource>
 </gresources>

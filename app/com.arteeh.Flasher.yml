@@ -1,7 +1,7 @@
 app-id: com.arteeh.Flasher
 # Libhandy depends on Vala, so the freedesktop platform is not enough
 runtime: org.gnome.Platform
-runtime-version: '3.38'
+runtime-version: '40'
 sdk: org.gnome.Sdk
 command: /app/bin/pinetime-flasher
 
@@ -23,6 +23,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/libusb/libusb.git
+        tag: v1.0.24
+        commit: c6a35c56016ea2ab2f19115d2ea1e85e0edae155
   # Flashing software this app uses
   - name: openocd
     config-opts:
@@ -30,6 +32,8 @@ modules:
     sources:
       - type: git
         url: https://git.code.sf.net/p/openocd/code
+        tag: v0.11.0
+        commit: f342aac0845a69d591ad39a025d74e9c765f6420
   # GTK widgets for mobile
   - name: libhandy
     buildsystem: meson
@@ -40,6 +44,8 @@ modules:
     sources:
       - type: git
         url: https://gitlab.gnome.org/GNOME/libhandy.git
+        tag: 1.0.3
+        commit: 7126d2e8da9dcdeb5751e60ff6a74930804f9637
   # My app
   - name: flasher
     buildsystem: simple
@@ -50,6 +56,7 @@ modules:
       - install -D ../src/flash-init.ocd /app/bin/flash-init.ocd
       - install -D ../src/flash-program.ocd /app/bin/flash-program.ocd
       - install -D ../src/swd-stlink.ocd /app/bin/swd-stlink.ocd
+      - install -D icon.svg /app/share/icons/hicolor/scalable/apps/com.arteeh.Flasher.svg
       - install -D icon.png /app/share/icons/hicolor/128x128/apps/com.arteeh.Flasher.png
       - install -D com.arteeh.Flasher.desktop /app/share/applications/com.arteeh.Flasher.desktop
       - install -D com.arteeh.Flasher.metainfo.xml /app/share/metainfo/com.arteeh.Flasher.metainfo.xml

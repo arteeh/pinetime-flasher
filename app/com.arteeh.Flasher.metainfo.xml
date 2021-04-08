@@ -10,14 +10,14 @@
 	<developer_name>Maarten de Jong</developer_name>
 	<update_contact>https://arteeh.com</update_contact>
 	
-	<launchable type="desktop-id">com.arteeh.Flasher.desktop</launchable>
 	<content_rating type="oars-1.1" />
+	<launchable type="desktop-id">com.arteeh.Flasher.desktop</launchable>
 	<url type="homepage">https://gitlab.com/arteeh/pinetime-flasher</url>
 	
 	<description>
 		<p>This is a Linux GTK application made for developers and tinkerers to easily flash the PineTime smartwatch using an ST-Link programmer. If you own a PineTime devkit and an ST-Link, the app can do the following for you:</p>
 		<ul>
-			<li>Get the latest versions of Enhanced MCUBoot, Infinitime, wasp-bootloader, and RIOT OS and flash it at the click of a button</li>
+			<li>Get the latest versions of Enhanced MCUBoot, Infinitime, and RIOT OS and flash it at the click of a button</li>
 			<li>Flash any binary from a given web URL to the watch</li>
 			<li>Flash any binary stored on your device to the watch</li>
 		</ul>
@@ -34,7 +34,7 @@
 	
 	<releases>
 	
-		<release version="0.1" date="2021-04-07">
+		<release version="0.1" date="2021-04-07T14:24:00+0000">
 			<description>
 				<p>
 					Initial release
