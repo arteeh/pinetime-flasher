@@ -288,7 +288,7 @@ void flash(bool removeAfter)
 void _btnFlashBootloader()
 {
 	// FIXME: This is not guaranteed to be the latest version
-	strcpy(url,"https://github.com/JF002/Pinetime/releases/download/0.13.0/bootloader.bin");
+	strcpy(url,"https://github.com/JF002/pinetime-mcuboot-bootloader/releases/download/1.0.0/bootloader.bin");
 	urlSet = true;
 	strcpy(address,"0x0000");
 	addressSet = CONTINUE;
@@ -305,7 +305,7 @@ void _btnFlashBootloader()
 void _btnFlashInfinitime()
 {
 	// FIXME: This is not guaranteed to be the latest version
-	strcpy(url,"https://github.com/JF002/Pinetime/releases/download/0.13.0/image-0.13.0.bin");
+	strcpy(url,"https://github.com/JF002/Infinitime/releases/download/1.0.0-RC3/pinetime-mcuboot-app-image-1.0.0.bin");
 	
 	urlSet = true;
 	strcpy(address,"0x8000");
@@ -328,7 +328,7 @@ void _btnFlashRiot()
 	strcpy(address,"0x0000");
 	addressSet = CONTINUE;
 	
-	flashConfirm("InfiniTime");
+	flashConfirm("RIOT");
 	if(confirmed == CONTINUE && urlSet == CONTINUE && addressSet == CONTINUE)
 	{
 		downloadBinary();
