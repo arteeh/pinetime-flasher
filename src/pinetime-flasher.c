@@ -389,7 +389,7 @@ void _btnFlashFile()
 	}
 		
 	flashConfirm(filePath);
-	if(confirmed == CONTINUE && urlSet == CONTINUE && addressSet == CONTINUE)
+	if(confirmed == CONTINUE && filePathSet == CONTINUE && addressSet == CONTINUE)
 	{
 		flash(DO_NOT_REMOVE_AFTER);
 	}

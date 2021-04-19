@@ -3,7 +3,7 @@ app-id: com.arteeh.Flasher
 runtime: org.gnome.Platform
 runtime-version: '40'
 sdk: org.gnome.Sdk
-command: /app/bin/pinetime-flasher
+command: pinetime-flasher
 
 finish-args:
   # Display: X11
@@ -19,7 +19,6 @@ finish-args:
 modules:
   # OpenOCD with ST-Link requires libusb to be installed
   - name: libusb
-    buildsystem: autotools
     sources:
       - type: git
         url: https://github.com/libusb/libusb.git
@@ -64,6 +63,6 @@ modules:
      #- type: git
      #  url: https://github.com/arteeh/pinetime-flasher.git
      #  tag: 0.1
-     #  commit: 8548b55e54f7e9adeb50816fd264da614b388b30
+     #  commit: 15136e3af3f9e8ccc5c6e5705718344b74ef1b48
      - type: dir
        path: /home/arteeh/git/pinetime-flasher
