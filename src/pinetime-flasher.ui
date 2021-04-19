@@ -67,7 +67,7 @@ Author: Maarten de Jong
     <property name="window-position">center</property>
     <property name="default-width">400</property>
     <property name="default-height">400</property>
-    <property name="icon">../build/icon.png</property>
+    <property name="icon">../build/icon.svg</property>
     <signal name="destroy" handler="gtk_main_quit" swapped="no"/>
     <child>
       <object class="GtkBox">
