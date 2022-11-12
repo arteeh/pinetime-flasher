@@ -18,7 +18,7 @@ _clear () {
 _requirements () {
 	# Install requirements
 	flatpak install -y --user org.flatpak.Builder
-	flatpak install -y --user org.gnome.Sdk//40
+	flatpak install -y --user org.gnome.Sdk//43
 }
 
 _play () {

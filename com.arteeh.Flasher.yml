@@ -1,7 +1,7 @@
 app-id: com.arteeh.Flasher
 # Libhandy depends on Vala, so the freedesktop platform is not enough
 runtime: org.gnome.Platform
-runtime-version: '40'
+runtime-version: '43'
 sdk: org.gnome.Sdk
 command: pinetime-flasher
 
