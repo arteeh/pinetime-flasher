@@ -60,9 +60,9 @@ modules:
       - install -D com.arteeh.Flasher.desktop /app/share/applications/com.arteeh.Flasher.desktop
       - install -D com.arteeh.Flasher.metainfo.xml /app/share/metainfo/com.arteeh.Flasher.metainfo.xml
     sources:
-     #- type: git
-     #  url: https://github.com/arteeh/pinetime-flasher.git
-     #  tag: 0.1
-     #  commit: 15136e3af3f9e8ccc5c6e5705718344b74ef1b48
-     - type: dir
-       path: /home/arteeh/git/pinetime-flasher
+     - type: git
+       url: https://github.com/arteeh/pinetime-flasher.git
+       tag: 1.0
+       commit: 501cf3d2295d45728f4821df14a37ffe64d7a8a7
+     #- type: dir
+     #  path: /home/arteeh/git/pinetime-flasher
