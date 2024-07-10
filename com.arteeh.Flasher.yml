@@ -1,68 +1,56 @@
-app-id: com.arteeh.Flasher
-# Libhandy depends on Vala, so the freedesktop platform is not enough
-runtime: org.gnome.Platform
-runtime-version: '43'
-sdk: org.gnome.Sdk
-command: pinetime-flasher
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2021 Maarten de Jong -->
+<component type="desktop-application">
 
-finish-args:
-  # Display: X11
-  - --share=ipc
-  - --socket=fallback-x11
-  # Display: Wayland
-  - --socket=wayland
-  # Download binaries from the internet
-  - --share=network
-  # Access to ST-Link usb device
-  - --device=all
+	<id>com.arteeh.Flasher</id>
+	<name>Pinetime Flasher</name>
+	<summary>Utility for flashing the PineTime</summary>
+	<developer_name>Maarten de Jong</developer_name>
+	<update_contact>https://arteeh.com</update_contact>
+	<launchable type="desktop-id">com.arteeh.Flasher.desktop</launchable>
+	<url type="homepage">https://github.com/arteeh/pinetime-flasher</url>
+	
+	<description>
+		<p>This is a Linux GTK application made for developers and tinkerers to easily flash the PineTime smartwatch using an ST-Link programmer. If you own a PineTime devkit and an ST-Link, the app can do the following for you:</p>
+		<ul>
+			<li>Get the latest community bootloader and InfiniTime release flash it with the click of a button</li>
+			<li>Flash any binary from a given web URL to the watch</li>
+			<li>Flash any binary stored on your device to the watch</li>
+		</ul>
+	</description>
 
-modules:
-  # OpenOCD with ST-Link requires libusb to be installed
-  - name: libusb
-    sources:
-      - type: git
-        url: https://github.com/libusb/libusb.git
-        tag: v1.0.24
-        commit: c6a35c56016ea2ab2f19115d2ea1e85e0edae155
-  # Flashing software this app uses
-  - name: openocd
-    config-opts:
-      - --enable-stlink
-    sources:
-      - type: git
-        url: https://git.code.sf.net/p/openocd/code
-        tag: v0.11.0
-        commit: f342aac0845a69d591ad39a025d74e9c765f6420
-  # GTK widgets for mobile
-  - name: libhandy
-    buildsystem: meson
-    builddir: true
-    config-opts:
-      - "-Dexamples=false"
-      - "-Dtests=false"
-    sources:
-      - type: git
-        url: https://gitlab.gnome.org/GNOME/libhandy.git
-        tag: 1.0.3
-        commit: 7126d2e8da9dcdeb5751e60ff6a74930804f9637
-  # My app
-  - name: flasher
-    buildsystem: simple
-    subdir: build
-    build-commands:
-      - make
-      - install -D pinetime-flasher /app/bin/pinetime-flasher
-      - install -D ../src/flash-init.ocd /app/bin/flash-init.ocd
-      - install -D ../src/flash-program.ocd /app/bin/flash-program.ocd
-      - install -D ../src/swd-stlink.ocd /app/bin/swd-stlink.ocd
-      - install -D icon.svg /app/share/icons/hicolor/scalable/apps/com.arteeh.Flasher.svg
-      - install -D icon.png /app/share/icons/hicolor/128x128/apps/com.arteeh.Flasher.png
-      - install -D com.arteeh.Flasher.desktop /app/share/applications/com.arteeh.Flasher.desktop
-      - install -D com.arteeh.Flasher.metainfo.xml /app/share/metainfo/com.arteeh.Flasher.metainfo.xml
-    sources:
-     - type: git
-       url: https://github.com/arteeh/pinetime-flasher.git
-       tag: 1.0
-       commit: 501cf3d2295d45728f4821df14a37ffe64d7a8a7
-     #- type: dir
-     #  path: /home/arteeh/git/pinetime-flasher
+	<categories>
+		<category>Development</category>
+		<category>Utility</category>
+	</categories>
+	
+	<screenshots>
+		<screenshot type="default">
+			<image>https://raw.githubusercontent.com/arteeh/pinetime-flasher/master/screenshot1.png</image>
+		</screenshot>
+		<screenshot>
+			<image>https://raw.githubusercontent.com/arteeh/pinetime-flasher/master/screenshot2.png</image>
+		</screenshot>
+	</screenshots>
+	
+	<releases>
+	  
+	  <release version="1.0" date="2022-11-12T15:00:00+0000">
+			<description>
+				<p>
+					Pinetime Flasher has been fully rewritten! This was done to support the latest runtimes and libraries, and to clear the way for future improvements.
+				</p>
+			</description>
+		</release>
+	  
+		<release version="0.1" date="2021-04-07T14:24:00+0000">
+			<description>
+				<p>
+					Initial release.
+				</p>
+			</description>
+		</release>
+		
+	</releases>
+	
+</component>
