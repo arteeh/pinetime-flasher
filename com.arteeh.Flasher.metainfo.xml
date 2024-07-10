@@ -4,7 +4,7 @@
 
 	<id>com.arteeh.Flasher</id>
 	<name>Pinetime Flasher</name>
-	<summary>A simple app for flashing the PineTime smartwatch with an ST-Link</summary>
+	<summary>Utility for flashing the PineTime</summary>
 	<developer_name>Maarten de Jong</developer_name>
 	<update_contact>https://arteeh.com</update_contact>
 	<launchable type="desktop-id">com.arteeh.Flasher.desktop</launchable>
@@ -18,13 +18,18 @@
 			<li>Flash any binary stored on your device to the watch</li>
 		</ul>
 	</description>
+
+	<categories>
+		<category>Development</category>
+		<category>Utility</category>
+	</categories>
 	
 	<screenshots>
 		<screenshot type="default">
-			<image>https://github.com/arteeh/pinetime-flasher/-/raw/master/data/screenshot1.png</image>
+			<image>https://raw.githubusercontent.com/arteeh/pinetime-flasher/master/screenshot1.png</image>
 		</screenshot>
 		<screenshot>
-			<image>https://github.com/arteeh/pinetime-flasher/-/raw/master/data/screenshot2.png</image>
+			<image>https://raw.githubusercontent.com/arteeh/pinetime-flasher/master/screenshot2.png</image>
 		</screenshot>
 	</screenshots>
 	
