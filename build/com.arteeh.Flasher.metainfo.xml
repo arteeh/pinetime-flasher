@@ -9,6 +9,8 @@
 	<update_contact>https://arteeh.com</update_contact>
 	<launchable type="desktop-id">com.arteeh.Flasher.desktop</launchable>
 	<url type="homepage">https://github.com/arteeh/pinetime-flasher</url>
+	<metadata_license>CC0-1.0</metadata_license>
+	<project_license>Apache-2.0</project_license>
 
 	<description>
 		<p>This is a Linux GTK application made for developers and tinkerers to easily flash the PineTime smartwatch using an ST-Link programmer. If you own a PineTime devkit and an ST-Link, the app can do the following for you:</p>
