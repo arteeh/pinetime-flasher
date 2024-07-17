@@ -62,7 +62,6 @@ modules:
     sources:
      - type: git
        url: https://github.com/arteeh/pinetime-flasher.git
-       tag: 1.0
-       commit: 1b86a1e20d2ff9baf34994f3cd196edb62fb2d47
+       tag: 1.1
      #- type: dir
      #  path: /home/arteeh/git/pinetime-flasher

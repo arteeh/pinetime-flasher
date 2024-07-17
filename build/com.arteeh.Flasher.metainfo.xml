@@ -9,7 +9,7 @@
 	<update_contact>https://arteeh.com</update_contact>
 	<launchable type="desktop-id">com.arteeh.Flasher.desktop</launchable>
 	<url type="homepage">https://github.com/arteeh/pinetime-flasher</url>
-	
+
 	<description>
 		<p>This is a Linux GTK application made for developers and tinkerers to easily flash the PineTime smartwatch using an ST-Link programmer. If you own a PineTime devkit and an ST-Link, the app can do the following for you:</p>
 		<ul>
@@ -23,7 +23,7 @@
 		<category>Development</category>
 		<category>Utility</category>
 	</categories>
-	
+
 	<screenshots>
 		<screenshot type="default">
 			<image>https://raw.githubusercontent.com/arteeh/pinetime-flasher/master/screenshot1.png</image>
@@ -32,17 +32,25 @@
 			<image>https://raw.githubusercontent.com/arteeh/pinetime-flasher/master/screenshot2.png</image>
 		</screenshot>
 	</screenshots>
-	
+
 	<releases>
-	  
-	  <release version="1.0" date="2022-11-12T15:00:00+0000">
+
+		<release version="1.1" date="2024-07-17T15:00:00+0000">
+			<description>
+				<p>
+					Some fixes for the Flathub CI.
+				</p>
+			</description>
+		</release>
+
+		<release version="1.0" date="2022-11-12T15:00:00+0000">
 			<description>
 				<p>
 					Pinetime Flasher has been fully rewritten! This was done to support the latest runtimes and libraries, and to clear the way for future improvements.
 				</p>
 			</description>
 		</release>
-	  
+
 		<release version="0.1" date="2021-04-07T14:24:00+0000">
 			<description>
 				<p>
@@ -50,7 +58,7 @@
 				</p>
 			</description>
 		</release>
-		
+
 	</releases>
-	
+
 </component>
